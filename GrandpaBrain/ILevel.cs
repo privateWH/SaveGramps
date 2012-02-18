@@ -7,5 +7,6 @@ namespace GrandpaBrain
 {
     interface ILevel
     {
+        Response Get(int lv);
     }
 }

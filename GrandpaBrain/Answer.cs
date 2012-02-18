@@ -5,11 +5,10 @@ using System.Text;
 
 namespace GrandpaBrain
 {
-    enum Operands
+    public class Answer
     {
-        Add=0,
-        Minus=1,
-        Times=2,
-        Divide=3
+        private Response expectedResponse;
+        private Response userResponse;
+
     }
 }
