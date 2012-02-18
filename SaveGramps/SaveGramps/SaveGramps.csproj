@@ -85,6 +85,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\GrandpaBrain\GrandpaBrain.csproj">
+      <Project>{93492F75-F9CD-4E1D-9F9B-490913A6C7DD}</Project>
+      <Name>GrandpaBrain</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SaveGrampsContent\SaveGrampsContent.contentproj">
       <Name>SaveGrampsContent</Name>
       <XnaReferenceType>Content</XnaReferenceType>
