@@ -9,6 +9,17 @@ namespace GrandpaBrain
     {
         private Response expectedResponse;
         private Response userResponse;
+        
+        public void AddNumber(int number)
+        {
+            userResponse.Numbers.Add(number);
+        }
 
+        public void AddOperand(Operands op)
+        {
+            userResponse.Operands.Add(op);
+        }
+
+        
     }
 }
