@@ -13,9 +13,9 @@ namespace GrandpaBrain
         Divide=3
     }
 
-    static class OperandHelper
+    public static class OperandHelper
     {
-        static String ConvertOperandToString(Operands operand)
+        public static String ConvertOperandToString(Operands operand)
         {
             switch (operand)
             {
