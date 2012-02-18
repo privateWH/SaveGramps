@@ -9,6 +9,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
 using Microsoft.Xna.Framework.Media;
+using SaveGramps.GameObjects;
+using GrandpaBrain;
 
 namespace SaveGramps
 {
@@ -19,6 +21,10 @@ namespace SaveGramps
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        Texture2D ballTexture;
+        Ball theBall;
+        SpriteFont arialFont;
+        
 
         public Game()
         {
@@ -53,6 +59,12 @@ namespace SaveGramps
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            ballTexture = Content.Load<Texture2D>("ball");
+            arialFont = Content.Load<SpriteFont>("Arial");
+            Ball.Initialize(ballTexture);
+
+            theBall = new NumberBall(10, new Vector2(50, 50));
+            
 
             // TODO: use this.Content to load your game content here
         }
@@ -89,8 +101,11 @@ namespace SaveGramps
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-
+            
             // TODO: Add your drawing code here
+            spriteBatch.Begin();
+            theBall.Draw(arialFont, spriteBatch);            
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }

@@ -12,4 +12,24 @@ namespace GrandpaBrain
         Times=2,
         Divide=3
     }
+
+    public static class OperandHelper
+    {
+        public static String ConvertOperandToString(Operands operand)
+        {
+            switch (operand)
+            {
+                case Operands.Add:
+                    return "+";
+                case Operands.Minus:
+                    return "-";
+                case Operands.Times:
+                    return "X";
+                case Operands.Divide:
+                    return "/";
+            }
+            throw new Exception("Invalid operand");
+
+        }
+    }
 }
