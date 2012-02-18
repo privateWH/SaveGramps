@@ -5,7 +5,7 @@ using System.Text;
 
 namespace GrandpaBrain
 {
-    interface ILevel
+    public interface ILevel
     {
         Response Get(int lv);
     }

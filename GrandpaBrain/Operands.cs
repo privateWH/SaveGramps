@@ -5,7 +5,7 @@ using System.Text;
 
 namespace GrandpaBrain
 {
-    enum Operands
+    public enum Operands
     {
         Add=0,
         Minus=1,

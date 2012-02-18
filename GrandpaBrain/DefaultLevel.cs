@@ -7,7 +7,7 @@ namespace GrandpaBrain
 {
     public class DefaultLevel : ILevel
     {
-        Response Get(int lv)
+        public Response Get(int lv)
         {
             Response r = new Response();
             Random rnd = new Random();

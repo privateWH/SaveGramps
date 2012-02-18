@@ -8,7 +8,7 @@ namespace GrandpaBrain
     public class Generator
     {
         private static Generator gen;
-        private static Generator()
+        static Generator()
         {
             if (gen == null)
                 gen = new Generator();
