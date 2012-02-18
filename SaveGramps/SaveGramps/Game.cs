@@ -112,7 +112,7 @@ namespace SaveGramps
             }
             if (hitBall != null)
             {
-
+                balls.Remove(hitBall);
             }
 
             base.Update(gameTime);
