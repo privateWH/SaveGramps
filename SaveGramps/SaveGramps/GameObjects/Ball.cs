@@ -30,7 +30,7 @@ namespace SaveGramps.GameObjects
 
         public void Draw(SpriteFont font, SpriteBatch spriteBatch)
         {
-
+            // TODO: Increase font size
             Vector2 FontOrigin = font.MeasureString(text) / 2;
             spriteBatch.Draw(texture, this.position, Color.White);
             float offsetX = texture.Width / 2 + position.X;

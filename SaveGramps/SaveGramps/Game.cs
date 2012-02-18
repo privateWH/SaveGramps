@@ -63,6 +63,7 @@ namespace SaveGramps
             ballTexture = Content.Load<Texture2D>("ball");
             arialFont = Content.Load<SpriteFont>("Arial");
             Ball.Initialize(ballTexture);
+            balls = new List<Ball>();
             for (int i = 0; i < 3; i++)
             {
                 Ball ball = new NumberBall(random.Next(1, 10), new Vector2(random.Next(0, 725), random.Next(0, 400)));
@@ -112,9 +113,16 @@ namespace SaveGramps
             }
             if (hitBall != null)
             {
+                // call AddNumber or AddOperand
                 balls.Remove(hitBall);
+
             }
 
+            // check if answer is correct or
+
+            // TODO check if balls have left the screen
+
+            // TODO: show subtotal
             base.Update(gameTime);
         }
 
