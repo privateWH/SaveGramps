@@ -40,6 +40,8 @@ namespace GrandpaBrain
             {
 
             }
+
+            return true;
         }
 
         private int? ComputeResponse()
