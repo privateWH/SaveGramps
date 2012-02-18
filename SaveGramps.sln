@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010 Express for Windows Phone
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaveGramps", "SaveGramps\SaveGramps\SaveGramps.csproj", "{340F5D16-8595-4A41-ABE4-F58FE48AB067}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "SaveGrampsContent", "SaveGramps\SaveGrampsContent\SaveGrampsContent.contentproj", "{D75F9A09-194C-46F9-BC95-9041CB2781AC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Windows Phone = Debug|Windows Phone
+		Release|Windows Phone = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{340F5D16-8595-4A41-ABE4-F58FE48AB067}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{340F5D16-8595-4A41-ABE4-F58FE48AB067}.Debug|Windows Phone.Build.0 = Debug|Windows Phone
+		{340F5D16-8595-4A41-ABE4-F58FE48AB067}.Debug|Windows Phone.Deploy.0 = Debug|Windows Phone
+		{340F5D16-8595-4A41-ABE4-F58FE48AB067}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+		{340F5D16-8595-4A41-ABE4-F58FE48AB067}.Release|Windows Phone.Build.0 = Release|Windows Phone
+		{340F5D16-8595-4A41-ABE4-F58FE48AB067}.Release|Windows Phone.Deploy.0 = Release|Windows Phone
+		{D75F9A09-194C-46F9-BC95-9041CB2781AC}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{D75F9A09-194C-46F9-BC95-9041CB2781AC}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
