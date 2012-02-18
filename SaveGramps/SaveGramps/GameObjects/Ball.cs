@@ -38,6 +38,20 @@ namespace SaveGramps.GameObjects
             Vector2 fontCenter = new Vector2(offsetX, offsetY);
             spriteBatch.DrawString(font, text, fontCenter, Color.Tomato, 0, FontOrigin, 1.0f, SpriteEffects.None, 0.5f);
         }
+
+        public Boolean hit(float x, float y)
+        {
+            if (x > position.X && x < (position.X + texture.Width) &&
+                y > position.Y && y < (position.Y + texture.Height))
+            {
+                // TODO: Show some animation?
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 
     class OperatorBall : Ball

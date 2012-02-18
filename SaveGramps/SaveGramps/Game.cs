@@ -22,7 +22,7 @@ namespace SaveGramps
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Texture2D ballTexture;
-        Ball theBall;
+        List<Ball> balls ;
         SpriteFont arialFont;
         
 
@@ -57,13 +57,17 @@ namespace SaveGramps
         /// </summary>
         protected override void LoadContent()
         {
+            Random random = new Random();
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             ballTexture = Content.Load<Texture2D>("ball");
             arialFont = Content.Load<SpriteFont>("Arial");
             Ball.Initialize(ballTexture);
-
-            theBall = new NumberBall(10, new Vector2(50, 50));
+            for (int i = 0; i < 3; i++)
+            {
+                Ball ball = new NumberBall(random.Next(1, 10), new Vector2(random.Next(0, 725), random.Next(0, 400)));
+                balls.Add(ball);
+            }
             
 
             // TODO: use this.Content to load your game content here
@@ -90,6 +94,26 @@ namespace SaveGramps
                 this.Exit();
 
             // TODO: Add your update logic here
+            Ball hitBall = null;
+            TouchCollection touchCollection = TouchPanel.GetState();
+            foreach (TouchLocation tl in touchCollection)
+            {
+                if ((tl.State == TouchLocationState.Pressed)
+                       /* || (tl.State == TouchLocationState.Moved)*/)
+                {
+                    foreach (Ball ball in balls) {
+                        if (ball.hit(tl.Position.X, tl.Position.Y))
+                        {
+                            hitBall = ball;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (hitBall != null)
+            {
+
+            }
 
             base.Update(gameTime);
         }
@@ -104,7 +128,9 @@ namespace SaveGramps
             
             // TODO: Add your drawing code here
             spriteBatch.Begin();
-            theBall.Draw(arialFont, spriteBatch);            
+            foreach(Ball ball in balls) {
+                ball.Draw(arialFont, spriteBatch);
+            }
             spriteBatch.End();
 
             base.Draw(gameTime);
