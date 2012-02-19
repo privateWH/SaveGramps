@@ -22,6 +22,7 @@ namespace SaveGramps
         RefreshLevel,
         PlayLevel,
         RoundReward,
+        RoundEnd,
         EndLevel
     }
 
@@ -122,15 +123,7 @@ namespace SaveGramps
                     break;
                 case GameStates.RefreshLevel:
                     {
-                        if (drawMessage)
-                        {
-                            this.accumulateTime += gameTime.ElapsedGameTime;
-                            if (this.accumulateTime >= this.roundRewardMessageTimeout)
-                            {
-                                drawMessage = false;
-                                accumulateTime = new TimeSpan(0, 0, 0);
-                            }
-                        }
+                        UpdateRewardMessageTime(gameTime);
 
                         int maxRightPosition = graphics.GraphicsDevice.Viewport.Width - Ball.Texture.Width;
 
@@ -201,18 +194,36 @@ namespace SaveGramps
                         break;
                     }
                 case GameStates.RoundReward:
+                    TerminateCond term; string termMsg;
+                    bool isTerminate = answerInBrain.ShouldTerminate(out term, out termMsg);
+                    if (isTerminate && term == TerminateCond.Impossible)
+                    {
+                        // TODO: GOT to study ur SAT penality comes in
+                        hud.wakeUpTotal--;
+                    }
+                    if (hud.wakeUpTotal == 0)
+                        gameState = GameStates.RefreshLevel; // TODO: update this to go to show the angel
+                    else
+                        gameState = GameStates.RoundEnd;
+
+                    UpdateRewardMessageTime(gameTime);
+                    UpdateAndRemoveOutOfBoundBalls(gameTime);
+                    if (balls.Count == 0)
+                    {
+                        gameState = GameStates.RefreshLevel;
+                    }
+                    break;
+                case GameStates.RoundEnd:
+                    UpdateRewardMessageTime(gameTime);
+                    UpdateAndRemoveOutOfBoundBalls(gameTime);
+                    if (balls.Count == 0)
+                    {
+                        gameState = GameStates.RefreshLevel;
+                    }
                     break;
                 case GameStates.PlayLevel:
                     {
-                        if (drawMessage)
-                        {
-                            this.accumulateTime += gameTime.ElapsedGameTime;
-                            if (this.accumulateTime >= this.roundRewardMessageTimeout)
-                            {
-                                drawMessage = false;
-                                accumulateTime = new TimeSpan(0, 0, 0);
-                            }
-                        }
+                        UpdateRewardMessageTime(gameTime);
 
                         foreach (TouchLocation tl in touchCollection)
                         {
@@ -251,9 +262,9 @@ namespace SaveGramps
                         }
 
                         // check if answer is correct or
-                        string termMsg;
+                        string _termMsg;
                         TerminateCond cond;
-                        if (answerInBrain.ShouldTerminate(out cond, out termMsg))
+                        if (answerInBrain.ShouldTerminate(out cond, out _termMsg))
                         {
                             switch (cond)
                             {
@@ -306,6 +317,19 @@ namespace SaveGramps
             base.Update(gameTime);
         }
 
+        private void UpdateRewardMessageTime(GameTime gameTime)
+        {
+            if (drawMessage)
+            {
+                this.accumulateTime += gameTime.ElapsedGameTime;
+                if (this.accumulateTime >= this.roundRewardMessageTimeout)
+                {
+                    drawMessage = false;
+                    accumulateTime = new TimeSpan(0, 0, 0);
+                }
+            }
+        }
+
         /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>
@@ -326,54 +350,15 @@ namespace SaveGramps
                 }
                 case GameStates.RefreshLevel:
                 {
-                    if (drawMessage)
-                    {
-                        spriteBatch.Begin();
-                        if (winOrLose)
-                        {
-                            spriteBatch.DrawString(arialFont, "You Won!", new Vector2(400, 240), Color.Red);
-                        }
-                        else
-                        {
-
-                            spriteBatch.DrawString(arialFont, "You Lose!", new Vector2(400, 240), Color.Red);
-                        }
-                        spriteBatch.End();
-                    }
+                    DrawRewardMessage();
                     break;
                 }
                 case GameStates.RoundReward:
-                {
-                    TerminateCond term; string termMsg;
-                    bool isTerminate = answerInBrain.ShouldTerminate(out term, out termMsg);
-                    if (isTerminate && term == TerminateCond.Impossible)
-                    {
-                        // TODO: GOT to study ur SAT penality comes in
-                        hud.wakeUpTotal--;
-                    }
-                    if (hud.wakeUpTotal == 0)
-                        gameState = GameStates.RefreshLevel; // TODO: update this to go to show the angel
-                    else
-                        gameState = GameStates.RefreshLevel;
-                    break;
-                }
+                case GameStates.RoundEnd:
                 case GameStates.PlayLevel:
                 {
 
-                    if (drawMessage)
-                    {
-                        spriteBatch.Begin();
-                        if (winOrLose)
-                        {
-                            spriteBatch.DrawString(arialFont, "You Won!", new Vector2(400, 240), Color.Red);
-                        }
-                        else
-                        {
-
-                            spriteBatch.DrawString(arialFont, "You Lose!", new Vector2(400, 240), Color.Red);
-                        }
-                        spriteBatch.End();
-                    }
+                    DrawRewardMessage();
 
                     spriteBatch.Begin();
                     foreach (Ball ball in balls)
@@ -391,6 +376,24 @@ namespace SaveGramps
             }
 
             base.Draw(gameTime);
+        }
+
+        private void DrawRewardMessage()
+        {
+            if (drawMessage)
+            {
+                spriteBatch.Begin();
+                if (winOrLose)
+                {
+                    spriteBatch.DrawString(arialFont, "You Won!", new Vector2(400, 240), Color.Red);
+                }
+                else
+                {
+
+                    spriteBatch.DrawString(arialFont, "You Lose!", new Vector2(400, 240), Color.Red);
+                }
+                spriteBatch.End();
+            }
         }
 
         private void UpdateAndRemoveOutOfBoundBalls(GameTime gameTime)
