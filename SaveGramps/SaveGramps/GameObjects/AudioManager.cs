@@ -11,7 +11,7 @@ namespace SaveGramps.GameObjects
     {
         public void playBgMusic()
         {
-            PlaySound("bgmusic.mp3");
+            //PlaySound("bgmusic.mp3");
         }
         private void PlaySound(string path)
         {
