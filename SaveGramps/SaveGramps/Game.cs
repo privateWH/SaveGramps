@@ -47,6 +47,7 @@ namespace SaveGramps
         AudioManager audioManager = new AudioManager();
         TimeSpan roundRewardMessageTimeout = new TimeSpan(0, 0, 1);
         TimeSpan accumulateTime = new TimeSpan(0, 0, 0);
+        Texture2D grampsHead;
         bool drawMessage = false;
         bool winOrLose = false;
         public Game()
@@ -91,6 +92,7 @@ namespace SaveGramps
             arialFont = Content.Load<SpriteFont>("Arial");
             roundFont = Content.Load<SpriteFont>("RoundFont");
             backgroundTexture = Content.Load<Texture2D>("background");
+            grampsHead = Content.Load<Texture2D>("gramps_big");
             wakeUpGrandpa = Content.Load<Texture2D>("gramps_small");
             Ball.Initialize(ballTexture);
         }
@@ -365,7 +367,8 @@ namespace SaveGramps
                     {
                         ball.Draw(arialFont, spriteBatch);
                     }
-                    hud.Draw(roundFont, spriteBatch);
+                    hud.Draw(arialFont, spriteBatch);
+                    hud.DrawRoundTotal(roundFont, spriteBatch);
                     spriteBatch.End();
                     break;
                 }
