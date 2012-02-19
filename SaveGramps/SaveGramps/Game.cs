@@ -32,6 +32,7 @@ namespace SaveGramps
         Texture2D ballTexture;
         Texture2D backgroundTexture;
         List<Ball> balls ;
+        HUD hud;
         SpriteFont arialFont;
         GameStates gameState = GameStates.RefreshLevel;
         
@@ -70,6 +71,7 @@ namespace SaveGramps
             arialFont = Content.Load<SpriteFont>("Arial");
             backgroundTexture = Content.Load<Texture2D>("background");
             Ball.Initialize(ballTexture);
+            HUD.Initialize(new Texture2D(GraphicsDevice, HUD.BOX_WIDTH, HUD.BOX_HEIGHT));
         }
 
         /// <summary>
@@ -116,10 +118,11 @@ namespace SaveGramps
                                     position,
                                     (position.X > this.graphics.GraphicsDevice.Viewport.Width / 2) ? -1 : 1
                                     );
-                            balls.Add(ball);
+                            balls.Add(ball);                            
                         }
-
+                        hud = new HUD();
                         gameState = GameStates.PlayLevel;
+                        hud.desiredTotal = 42;
                         break;
                     }
                 case GameStates.PlayLevel:
@@ -150,7 +153,10 @@ namespace SaveGramps
 
                         // TODO: check if balls have left the screen
 
-                        // TODO: show subtotal
+                        
+                        hud.runningTotal = 24;
+                        hud.Draw(arialFont, spriteBatch);
+
 
                         // Update ball locations
                         for(int i = balls.Count - 1; i >= 0; i--)
@@ -166,7 +172,7 @@ namespace SaveGramps
                             }
 
                         }
-
+                        
                         if (balls.Count == 0)
                         {
                             gameState = GameStates.RefreshLevel;
