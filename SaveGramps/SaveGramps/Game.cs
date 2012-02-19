@@ -1,3 +1,5 @@
+#define DDEBUG
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -117,13 +119,17 @@ namespace SaveGramps
                         hud.desiredTotal = expectedResponse.Answer;
                         answerInBrain = new Answer(expectedResponse);
                         
-                        //debug only
+#if DDEBUG
                         int i = 0;
+#endif
 
                         foreach(var num in expectedResponse.Numbers)
                         {
-                            //Vector2 position = new Vector2((random.Next(0,1) == 0 )?random.Next(0, 400) : random.Next(400, 800), 400);
+#if DDEBUG
                             Vector2 position = new Vector2(100 * i, 100); i++;
+#else
+                            Vector2 position = new Vector2((random.Next(0, 1) == 0) ? random.Next(0, 400) : random.Next(400, 800), 400);
+#endif
                             Ball ball = new NumberBall(
                                     num,
                                     position,
@@ -132,11 +138,18 @@ namespace SaveGramps
                             balls.Add(ball);
                         }
 
+#if DDEBUG
                         i = 0;
+#endif
+
                         foreach (var op in expectedResponse.Operands)
                         {
-                            //Vector2 position = new Vector2((random.Next(0, 1) == 0) ? random.Next(0, 400) : random.Next(400, 800), 400);
+
+#if DDEBUG
                             Vector2 position = new Vector2(100 * i, 300); i++;
+#else
+                            Vector2 position = new Vector2((random.Next(0, 1) == 0) ? random.Next(0, 400) : random.Next(400, 800), 400);
+#endif
                             Ball ball = new OperatorBall(
                                     op,
                                     position,
