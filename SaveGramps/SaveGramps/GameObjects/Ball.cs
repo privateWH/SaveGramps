@@ -31,6 +31,7 @@ namespace SaveGramps.GameObjects
         {
             Texture = _texture;
         }
+
         public Ball(Vector2 position, int xVelocityMultiplier)
         {
             double x = Ball.randomNum.NextDouble();
@@ -50,7 +51,6 @@ namespace SaveGramps.GameObjects
 
         public void Draw(SpriteFont font, SpriteBatch spriteBatch)
         {
-            // TODO: Increase font size
             Vector2 FontOrigin = font.MeasureString(text) / 2;
             spriteBatch.Draw(Texture, this.position, Color.White);
             float offsetX = Texture.Width / 2 + position.X;

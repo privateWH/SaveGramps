@@ -32,6 +32,7 @@ namespace SaveGramps
         Texture2D ballTexture;
         Texture2D backgroundTexture;
         List<Ball> balls ;
+        HUD hud;
         SpriteFont arialFont;
         GameStates gameState = GameStates.RefreshLevel;
         int lvHandler;
@@ -73,6 +74,29 @@ namespace SaveGramps
             arialFont = Content.Load<SpriteFont>("Arial");
             backgroundTexture = Content.Load<Texture2D>("background");
             Ball.Initialize(ballTexture);
+            HUD.Initialize(new Texture2D(GraphicsDevice, HUD.BOX_WIDTH, HUD.BOX_HEIGHT));
+        }
+
+        /// <summary>
+        /// UnloadContent will be called once per game and is the place to unload
+        /// all content.
+        /// </summary>
+        protected override void UnloadContent()
+        {
+            // TODO: Unload any non ContentManager content here
+        }
+
+        /// <summary>
+        /// Allows the game to run logic such as updating the world,
+        /// checking for collisions, gathering input, and playing audio.
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        protected override void Update(GameTime gameTime)
+        {
+            // Allows the game to exit
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
+                this.Exit();
+
         }
 
         /// <summary>
@@ -131,9 +155,11 @@ namespace SaveGramps
                                     position,
                                     (position.X > this.graphics.GraphicsDevice.Viewport.Width / 2) ? -1 : 1
                                     );
-                            balls.Add(ball);
+                            balls.Add(ball);                            
                         }
+                        hud = new HUD();
                         gameState = GameStates.PlayLevel;
+                        hud.desiredTotal = 42;
                         break;
                     }
                 case GameStates.PlayLevel:
@@ -180,7 +206,10 @@ namespace SaveGramps
                         }
                         // TODO: check if balls have left the screen
 
-                        // TODO: show subtotal
+                        
+                        hud.runningTotal = 24;
+                        hud.Draw(arialFont, spriteBatch);
+
 
                         // Update ball locations
                         for(int i = balls.Count - 1; i >= 0; i--)
@@ -196,7 +225,7 @@ namespace SaveGramps
                             }
 
                         }
-
+                        
                         if (balls.Count == 0)
                         {
                             gameState = GameStates.RefreshLevel;
