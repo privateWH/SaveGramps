@@ -22,10 +22,10 @@ namespace SaveGramps
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Texture2D ballTexture;
+        Texture2D backgroundTexture;
         List<Ball> balls ;
         SpriteFont arialFont;
         
-
         public Game()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -46,7 +46,20 @@ namespace SaveGramps
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            Random random1 = new Random();
+            Random random2 = new Random();
+
+            balls = new List<Ball>();
+            for (int i = 0; i < 5; i++)
+            {
+                Vector2 position = new Vector2((i % 2 == 0) ? random2.Next(0, 400) : random2.Next(400, 800), 400);
+                Ball ball = new NumberBall(
+                        random1.Next(1, 10), 
+                        position,
+                        (position.X > this.graphics.GraphicsDevice.Viewport.Width / 2) ? -1 : 1
+                        );
+                balls.Add(ball);
+            }
 
             base.Initialize();
         }
@@ -57,20 +70,12 @@ namespace SaveGramps
         /// </summary>
         protected override void LoadContent()
         {
-            Random random = new Random();
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            ballTexture = Content.Load<Texture2D>("ball");
+            ballTexture = Content.Load<Texture2D>("smallball");
             arialFont = Content.Load<SpriteFont>("Arial");
+            backgroundTexture = Content.Load<Texture2D>("background");
             Ball.Initialize(ballTexture);
-            balls = new List<Ball>();
-            for (int i = 0; i < 3; i++)
-            {
-                Ball ball = new NumberBall(random.Next(1, 10), new Vector2(random.Next(0, 725), random.Next(0, 400)));
-                balls.Add(ball);
-            }
-            
-
             // TODO: use this.Content to load your game content here
         }
 
@@ -103,7 +108,7 @@ namespace SaveGramps
                        /* || (tl.State == TouchLocationState.Moved)*/)
                 {
                     foreach (Ball ball in balls) {
-                        if (ball.hit(tl.Position.X, tl.Position.Y))
+                        if (ball.Hit(tl.Position.X, tl.Position.Y))
                         {
                             hitBall = ball;
                             break;
@@ -123,6 +128,15 @@ namespace SaveGramps
             // TODO check if balls have left the screen
 
             // TODO: show subtotal
+            
+
+            // Update ball locations
+
+            foreach (Ball ball in balls)
+            {
+                ball.Update(gameTime);
+            }
+
             base.Update(gameTime);
         }
 
@@ -133,8 +147,11 @@ namespace SaveGramps
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            
-            // TODO: Add your drawing code here
+
+            spriteBatch.Begin();
+            spriteBatch.Draw(backgroundTexture, Vector2.Zero, Color.White);
+            spriteBatch.End();
+
             spriteBatch.Begin();
             foreach(Ball ball in balls) {
                 ball.Draw(arialFont, spriteBatch);

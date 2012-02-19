@@ -12,20 +12,29 @@ namespace SaveGramps.GameObjects
     {
         public Vector2 position;
         public String text;
+        public double time;
+        public int xVelocityMultiplier;
         static Texture2D texture;
+        public Vector2 initialVelocity;
 
-        public static void Initialize(Texture2D inTexture)
+        public static void Initialize(Texture2D _texture)
         {
-            texture = inTexture;
+            texture = _texture;
         }
-        public Ball(Vector2 position)
+        public Ball(Vector2 position, int xVelocityMultiplier)
         {
-            
+            Random random = new Random();
             this.position = position;
+            this.xVelocityMultiplier = xVelocityMultiplier;
+            this.initialVelocity = new Vector2(random.Next(0,3), random.Next(9,12));
         }
 
-        public void Update()
+        public void Update(GameTime gameTime)
         {
+            Console.WriteLine("time: " + gameTime.ElapsedGameTime.TotalSeconds);
+            this.position.Y = this.position.Y + (float)(-1 * initialVelocity.Y * time + 7.8 * time * time / 2);// + Ball.viewPort.Height - texture.Height;
+            this.position.X = this.position.X + (float)(xVelocityMultiplier * initialVelocity.X * time);
+            this.time = this.time + gameTime.ElapsedGameTime.TotalSeconds;
         }
 
         public void Draw(SpriteFont font, SpriteBatch spriteBatch)
@@ -39,7 +48,7 @@ namespace SaveGramps.GameObjects
             spriteBatch.DrawString(font, text, fontCenter, Color.Tomato, 0, FontOrigin, 1.0f, SpriteEffects.None, 0.5f);
         }
 
-        public Boolean hit(float x, float y)
+        public Boolean Hit(float x, float y)
         {
             if (x > position.X && x < (position.X + texture.Width) &&
                 y > position.Y && y < (position.Y + texture.Height))
@@ -57,8 +66,8 @@ namespace SaveGramps.GameObjects
     class OperatorBall : Ball
     {
 
-        public OperatorBall(Operands value, Vector2 initialPosition)
-            : base(initialPosition)
+        public OperatorBall(Operands value, Vector2 initialPosition, int xVelocityMultiplier)
+            : base(initialPosition, xVelocityMultiplier)
         {
             text = OperandHelper.ConvertOperandToString(value);
         }
@@ -66,8 +75,8 @@ namespace SaveGramps.GameObjects
 
     class NumberBall : Ball
     {
-        public NumberBall(Int32 value, Vector2 initialPosition)
-            : base(initialPosition)
+        public NumberBall(Int32 value, Vector2 initialPosition, int xVelocityMultiplier)
+            : base(initialPosition, xVelocityMultiplier)
         {
             text = value.ToString();
         }
