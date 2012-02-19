@@ -16,18 +16,20 @@ namespace SaveGramps.GameObjects
         private void PlaySound(string path)
         {
 
-                if (!string.IsNullOrEmpty(path))
+            if (!string.IsNullOrEmpty(path))
+            {
+                using (var stream = TitleContainer.OpenStream(path))
                 {
-                    using (var stream = TitleContainer.OpenStream(path))
+                    if (stream != null)
                     {
-                        if (stream != null)
-                        {
-                            var effect = SoundEffect.FromStream(stream);
-                            FrameworkDispatcher.Update();
-                            effect.Play();
-                        }
+                        var effect = SoundEffect.FromStream(stream);
+                        SoundEffectInstance effectInstance = effect.CreateInstance();
+                        FrameworkDispatcher.Update();
+                        effectInstance.IsLooped = true;
+                        effectInstance.Play();
                     }
                 }
+            }
 
 
         }
