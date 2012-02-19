@@ -36,6 +36,7 @@ namespace SaveGramps
         Texture2D ballTexture;
         Texture2D backgroundTexture;
         Texture2D wakeUpGrandpa;
+        SpriteFont roundFont;
         List<Ball> balls ;
         HUD hud;
         SpriteFont arialFont;
@@ -87,6 +88,7 @@ namespace SaveGramps
             spriteBatch = new SpriteBatch(GraphicsDevice);
             ballTexture = Content.Load<Texture2D>("smallballcolorshadow");
             arialFont = Content.Load<SpriteFont>("Arial");
+            roundFont = Content.Load<SpriteFont>("RoundFont");
             backgroundTexture = Content.Load<Texture2D>("background");
             wakeUpGrandpa = Content.Load<Texture2D>("gramps_small");
             Ball.Initialize(ballTexture);
@@ -381,12 +383,12 @@ namespace SaveGramps
                         spriteBatch.Begin();
                         if (winOrLose)
                         {
-                            spriteBatch.DrawString(arialFont, "You Won!", new Vector2(400, 240), Color.Red);
+                            spriteBatch.DrawString(roundFont, "You Won!", new Vector2(400, 240), Color.Red);
                         }
                         else
                         {
 
-                            spriteBatch.DrawString(arialFont, "You Lose!", new Vector2(400, 240), Color.Red);
+                            spriteBatch.DrawString(roundFont, "You Lose!", new Vector2(400, 240), Color.Red);
                         }
                         spriteBatch.End();
                     }
@@ -396,7 +398,7 @@ namespace SaveGramps
                     {
                         ball.Draw(arialFont, spriteBatch);
                     }
-                    hud.Draw(arialFont, spriteBatch);
+                    hud.Draw(roundFont, spriteBatch);
                     spriteBatch.End();
                     break;
                 }
