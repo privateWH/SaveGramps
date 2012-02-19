@@ -67,8 +67,9 @@ namespace SaveGramps
             DefaultLevel defaultLv = new DefaultLevel();
             lvHandler = Generator.RegisterLevel(defaultLv);
             base.Initialize();
-            audioManager.playBgMusic();
             hud = new HUD();
+            audioManager.Initialize(Content);
+            audioManager.playBgMusic();
         }
 
         /// <summary>
@@ -225,6 +226,7 @@ namespace SaveGramps
                                 throw new Exception("The hitBall.BallType is not yet implemented");
                             }
                             balls.Remove(hitBall);
+                            audioManager.playBallPopped();
 
                         }
 
