@@ -200,9 +200,19 @@ namespace SaveGramps
 
                         // check if answer is correct or
                         string termMsg;
-                        if (answerInBrain.ShouldTerminate(out termMsg))
+                        TerminateCond cond;
+                        if (answerInBrain.ShouldTerminate(out cond,out termMsg))
                         {
-                            gameState = GameStates.RefreshLevel;
+                            switch (cond)
+                            {
+                                case TerminateCond.Normal:
+                                case TerminateCond.Impossible: //update to a display this new picture
+                                case TerminateCond.Timeout:
+                                    gameState = GameStates.RefreshLevel;
+                                    break;
+                                case TerminateCond.NoTerminate:
+                                    break;
+                            }
                         }
                         // TODO: check if balls have left the screen
 
