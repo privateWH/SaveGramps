@@ -35,6 +35,7 @@ namespace SaveGramps
         SpriteBatch spriteBatch;
         Texture2D ballTexture;
         Texture2D backgroundTexture;
+        Texture2D wakeUpGrandpa;
         List<Ball> balls ;
         HUD hud;
         SpriteFont arialFont;
@@ -69,6 +70,8 @@ namespace SaveGramps
             base.Initialize();
             audioManager.playBgMusic();
             hud = new HUD();
+            hud.tx2WakeUpGrandPa = wakeUpGrandpa;
+            hud.wakeUpTotal = 5;
         }
 
         /// <summary>
@@ -82,8 +85,8 @@ namespace SaveGramps
             ballTexture = Content.Load<Texture2D>("smallballcolorshadow");
             arialFont = Content.Load<SpriteFont>("Arial");
             backgroundTexture = Content.Load<Texture2D>("background");
+            wakeUpGrandpa = Content.Load<Texture2D>("gramps_small");
             Ball.Initialize(ballTexture);
-            HUD.Initialize(new Texture2D(GraphicsDevice, HUD.BOX_WIDTH, HUD.BOX_HEIGHT));
         }
 
         /// <summary>
