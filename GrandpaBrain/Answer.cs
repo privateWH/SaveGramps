@@ -89,6 +89,7 @@ namespace GrandpaBrain
         {
             //assuming IsCorrect = false or result == null;
             // this implies we missing some operand(s) or number(s) to make the "potential" equation to have a result
+            if (userResponse.Numbers.Count == 0 || userResponse.Operands.Count == 0) return true;
             return GotPotentialHelper(userResponse.Numbers, userResponse.Operands);
         }
 

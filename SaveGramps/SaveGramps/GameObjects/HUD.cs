@@ -12,10 +12,10 @@ namespace SaveGramps.GameObjects
     {
         public int runningTotal { get; set; }
         public int desiredTotal { get; set; }
-        Vector2 RUNNING_TOTAL_POSITION = new Vector2(0, 0);
+        Vector2 RUNNING_TOTAL_POSITION = new Vector2(20, 20);
         public const int BOX_WIDTH = 70;
         public const int BOX_HEIGHT = 50;
-        Vector2 DESIRED_TOTAL_POSITION = new Vector2(400, 0);
+        Vector2 DESIRED_TOTAL_POSITION = new Vector2(400, 20);
 
         public static Texture2D Texture { get; set; }
 
