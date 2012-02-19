@@ -45,6 +45,8 @@ namespace SaveGramps
         AudioManager audioManager = new AudioManager();
         TimeSpan roundRewardMessageTimeout = new TimeSpan(0, 0, 1);
         TimeSpan accumulateTime = new TimeSpan(0, 0, 0);
+        bool drawMessage = false;
+        bool winOrLose = false;
         public Game()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -119,6 +121,16 @@ namespace SaveGramps
                     break;
                 case GameStates.RefreshLevel:
                     {
+                        if (drawMessage)
+                        {
+                            this.accumulateTime += gameTime.ElapsedGameTime;
+                            if (this.accumulateTime >= this.roundRewardMessageTimeout)
+                            {
+                                drawMessage = false;
+                                accumulateTime = new TimeSpan(0, 0, 0);
+                            }
+                        }
+
                         int maxRightPosition = graphics.GraphicsDevice.Viewport.Width - Ball.Texture.Width;
 
                         balls = new List<Ball>();
@@ -188,15 +200,19 @@ namespace SaveGramps
                         break;
                     }
                 case GameStates.RoundReward:
-                    this.accumulateTime += gameTime.ElapsedGameTime;
-                    if (this.accumulateTime >= this.roundRewardMessageTimeout)
-                    {
-                        accumulateTime = new TimeSpan(0, 0, 0);
-                        gameState = GameStates.RefreshLevel;
-                    }
                     break;
                 case GameStates.PlayLevel:
                     {
+                        if (drawMessage)
+                        {
+                            this.accumulateTime += gameTime.ElapsedGameTime;
+                            if (this.accumulateTime >= this.roundRewardMessageTimeout)
+                            {
+                                drawMessage = false;
+                                accumulateTime = new TimeSpan(0, 0, 0);
+                            }
+                        }
+
                         foreach (TouchLocation tl in touchCollection)
                         {
                             if ((tl.State == TouchLocationState.Pressed)
@@ -240,10 +256,16 @@ namespace SaveGramps
                             {
                                 case TerminateCond.Normal:
                                     hud.runningTotal = hud.runningTotal + 1;
-                                    gameState = GameStates.RoundReward;
+                                    drawMessage = true;
+                                    winOrLose = true;
+                                    gameState = GameStates.RefreshLevel;
+                                    //gameState = GameStates.RoundReward;
                                     break;
                                 case TerminateCond.Impossible: //update to a display this new picture
-                                    gameState = GameStates.RoundReward;
+                                    drawMessage = true;
+                                    winOrLose = false;
+                                    gameState = GameStates.RefreshLevel;
+                                    //gameState = GameStates.RoundReward;
                                     break;
                                 case TerminateCond.Timeout:
                                     throw new Exception("Timeout");
@@ -310,24 +332,44 @@ namespace SaveGramps
                 }
                 case GameStates.RefreshLevel:
                 {
+                    if (drawMessage)
+                    {
+                        spriteBatch.Begin();
+                        if (winOrLose)
+                        {
+                            spriteBatch.DrawString(arialFont, "You Won!", new Vector2(400, 240), Color.Red);
+                        }
+                        else
+                        {
+
+                            spriteBatch.DrawString(arialFont, "You Lose!", new Vector2(400, 240), Color.Red);
+                        }
+                        spriteBatch.End();
+                    }
                     break;
                 }
                 case GameStates.RoundReward:
                 {
-                    spriteBatch.Begin();
-                    TerminateCond cond;
-                    string condMsg;
-                    bool isTerminate = answerInBrain.ShouldTerminate(out cond, out condMsg);
-                    if (isTerminate && cond == TerminateCond.Normal){
-                        spriteBatch.DrawString(arialFont,"You Won!",new Vector2(400,240),Color.Red);
-                    } else if (isTerminate && cond== TerminateCond.Impossible){
-                        spriteBatch.DrawString(arialFont, "You Lose!", new Vector2(400, 240), Color.Red);
-                    }
-                    spriteBatch.End();
                     break;
                 }
                 case GameStates.PlayLevel:
                 {
+
+                    if (drawMessage)
+                    {
+                        spriteBatch.Begin();
+                        if (winOrLose)
+                        {
+                            spriteBatch.DrawString(arialFont, "You Won!", new Vector2(400, 240), Color.Red);
+                        }
+                        else
+                        {
+
+                            spriteBatch.DrawString(arialFont, "You Lose!", new Vector2(400, 240), Color.Red);
+                        }
+                        spriteBatch.End();
+                    }
+
                     spriteBatch.Begin();
                     foreach (Ball ball in balls)
                     {
