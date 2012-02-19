@@ -29,6 +29,7 @@ namespace SaveGramps
     /// </summary>
     public class Game : Microsoft.Xna.Framework.Game
     {
+        static Random gRandom = new Random();
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Texture2D ballTexture;
@@ -112,7 +113,8 @@ namespace SaveGramps
                     break;
                 case GameStates.RefreshLevel:
                     {
-                        Random random = new Random();
+                        int maxRightPosition = graphics.GraphicsDevice.Viewport.Width - Ball.Texture.Width;
+                        bool alternateSideOfScreen = true;
 
                         balls = new List<Ball>();
 
@@ -131,7 +133,8 @@ namespace SaveGramps
 #if DDEBUG
                             Vector2 position = new Vector2(100 * i, 100); i++;
 #else
-                            Vector2 position = new Vector2((random.Next(0, 1) == 0) ? random.Next(0, 400) : random.Next(400, 800), 400);
+                            Vector2 position = new Vector2(alternateSideOfScreen ? gRandom.Next(0, 300) : gRandom.Next(500, maxRightPosition), 485);
+                            alternateSideOfScreen = alternateSideOfScreen ? false : true;
 #endif
                             Ball ball = new NumberBall(
                                     num,
@@ -151,7 +154,8 @@ namespace SaveGramps
 #if DDEBUG
                             Vector2 position = new Vector2(100 * i, 300); i++;
 #else
-                            Vector2 position = new Vector2((random.Next(0, 1) == 0) ? random.Next(0, 400) : random.Next(400, 800), 400);
+                            Vector2 position = new Vector2(alternateSideOfScreen ? gRandom.Next(0, 300) : gRandom.Next(500, maxRightPosition), 485);
+                            alternateSideOfScreen = alternateSideOfScreen ? false : true;
 #endif
                             Ball ball = new OperatorBall(
                                     op,
