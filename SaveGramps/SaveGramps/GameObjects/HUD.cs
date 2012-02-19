@@ -23,13 +23,12 @@ namespace SaveGramps.GameObjects
         {
             Texture = _texture;
         }
-
         
         public void Draw(SpriteFont font, SpriteBatch spriteBatch)
         {
             
             Vector2 runningTotalOrigin = font.MeasureString(runningTotal.ToString()) / 2;
-            spriteBatch.DrawString(font, runningTotal.ToString(), RUNNING_TOTAL_POSITION, Color.Tomato, 0, runningTotalOrigin, 1.0f, SpriteEffects.None, 0.5f);
+            spriteBatch.DrawString(font, "Round: " + runningTotal.ToString(), RUNNING_TOTAL_POSITION, Color.Tomato, 0, runningTotalOrigin, 1.0f, SpriteEffects.None, 0.5f);
 
             Vector2 desiredTotalOrigin = font.MeasureString(desiredTotal.ToString()) / 2;
             spriteBatch.DrawString(font, desiredTotal.ToString(), DESIRED_TOTAL_POSITION, Color.Tomato, 0, desiredTotalOrigin, 1.0f, SpriteEffects.None, 0.5f);

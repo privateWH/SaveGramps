@@ -68,6 +68,7 @@ namespace SaveGramps
             lvHandler = Generator.RegisterLevel(defaultLv);
             base.Initialize();
             audioManager.playBgMusic();
+            hud = new HUD();
         }
 
         /// <summary>
@@ -121,7 +122,7 @@ namespace SaveGramps
 
                         // query balls from Grandpa's Brain
                         Response expectedResponse = Generator.GetExpectedResponseByLevel(lvHandler);
-                        hud = new HUD();
+
                         hud.desiredTotal = expectedResponse.Answer;
                         answerInBrain = new Answer(expectedResponse);
 
@@ -235,6 +236,9 @@ namespace SaveGramps
                             switch (cond)
                             {
                                 case TerminateCond.Normal:
+                                    hud.runningTotal = hud.runningTotal + 1;
+                                    gameState = GameStates.RoundReward;
+                                    break;
                                 case TerminateCond.Impossible: //update to a display this new picture
                                     gameState = GameStates.RoundReward;
                                     break;
@@ -247,11 +251,8 @@ namespace SaveGramps
                                     break;
                             }
                         }
-                        // TODO: check if balls have left the screen
 
-                        
-                        hud.runningTotal = 24;
-
+                        // TODO: end game state when balls left screen
                         // Update ball locations
                         for(int i = balls.Count - 1; i >= 0; i--)
                         {
