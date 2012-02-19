@@ -156,12 +156,28 @@ namespace SaveGramps
                         if (hitBall != null)
                         {
                             // call AddNumber or AddOperand
+                            if (hitBall.ballType == BallType.Number)
+                            {
+                                answerInBrain.AddNumber(int.Parse(hitBall.text));
+                            }
+                            else if (hitBall.ballType == BallType.Operand)
+                            {
+                                answerInBrain.AddOperand((Operands)Enum.Parse(typeof(Operands), hitBall.text, true));
+                            }
+                            else
+                            {
+                                throw new Exception("The hitBall.BallType is not yet implemented");
+                            }
                             balls.Remove(hitBall);
 
                         }
 
                         // check if answer is correct or
-
+                        string termMsg;
+                        if (answerInBrain.ShouldTerminate(out termMsg))
+                        {
+                            gameState = GameStates.RefreshLevel;
+                        }
                         // TODO: check if balls have left the screen
 
                         // TODO: show subtotal
