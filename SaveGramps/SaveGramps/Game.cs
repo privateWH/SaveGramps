@@ -179,7 +179,7 @@ namespace SaveGramps
                         // check if answer is correct or
                         string termMsg;
                         TerminateCond cond;
-                        if (answerInBrain.ShouldTerminate(out cond,out termMsg))
+                        if (answerInBrain.ShouldTerminate(out cond, out termMsg))
                         {
                             switch (cond)
                             {
@@ -196,8 +196,6 @@ namespace SaveGramps
 
                         
                         hud.runningTotal = 24;
-                        hud.Draw(arialFont, spriteBatch);
-
 
                         // Update ball locations
                         for(int i = balls.Count - 1; i >= 0; i--)
@@ -258,6 +256,7 @@ namespace SaveGramps
                     {
                         ball.Draw(arialFont, spriteBatch);
                     }
+                    hud.Draw(arialFont, spriteBatch);
                     spriteBatch.End();
                     break;
                 }
