@@ -1,4 +1,4 @@
-//#define DDEBUG
+#define DDEBUG
 
 using System;
 using System.Collections.Generic;
@@ -21,6 +21,7 @@ namespace SaveGramps
         Start,
         RefreshLevel,
         PlayLevel,
+        RoundReward,
         EndLevel
     }
 
@@ -40,7 +41,8 @@ namespace SaveGramps
         int lvHandler;
         Answer answerInBrain;
         AudioManager audioManager = new AudioManager();
-
+        TimeSpan roundRewardMessageTimeout = new TimeSpan(0, 0, 1);
+        TimeSpan accumulateTime = new TimeSpan(0, 0, 0);
         public Game()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -164,6 +166,14 @@ namespace SaveGramps
                         gameState = GameStates.PlayLevel;
                         break;
                     }
+                case GameStates.RoundReward:
+                    this.accumulateTime += gameTime.ElapsedGameTime;
+                    if (this.accumulateTime >= this.roundRewardMessageTimeout)
+                    {
+                        accumulateTime = new TimeSpan(0, 0, 0);
+                        gameState = GameStates.RefreshLevel;
+                    }
+                    break;
                 case GameStates.PlayLevel:
                     {
                         foreach (TouchLocation tl in touchCollection)
@@ -208,11 +218,9 @@ namespace SaveGramps
                             switch (cond)
                             {
                                 case TerminateCond.Normal:
-                                    Console.WriteLine("WIN");
-                                    throw new Exception("WIN");
-                                    break;
                                 case TerminateCond.Impossible: //update to a display this new picture
-                                    throw new Exception("IMpossible");
+                                    gameState = GameStates.RoundReward;
+                                    break;
                                 case TerminateCond.Timeout:
                                     throw new Exception("Timeout");
                                     gameState = GameStates.RefreshLevel;
@@ -281,6 +289,20 @@ namespace SaveGramps
                 }
                 case GameStates.RefreshLevel:
                 {
+                    break;
+                }
+                case GameStates.RoundReward:
+                {
+                    spriteBatch.Begin();
+                    TerminateCond cond;
+                    string condMsg;
+                    bool isTerminate = answerInBrain.ShouldTerminate(out cond, out condMsg);
+                    if (isTerminate && cond == TerminateCond.Normal){
+                        spriteBatch.DrawString(arialFont,"You Won!",new Vector2(400,240),Color.Red);
+                    } else if (isTerminate && cond== TerminateCond.Impossible){
+                        spriteBatch.DrawString(arialFont, "You Lose!", new Vector2(400, 240), Color.Red);
+                    }
+                    spriteBatch.End();
                     break;
                 }
                 case GameStates.PlayLevel:

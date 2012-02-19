@@ -13,6 +13,8 @@ namespace GrandpaBrain
         private bool isDirty = false;
         private int? result = null;
         private bool potential = true;
+        public int StartPotentialCheckThreshold =3;
+
         private Answer(){ //internal test only
         }
         public Answer(Response expectedAnswer)
@@ -41,15 +43,23 @@ namespace GrandpaBrain
             return (result.HasValue) ? result.Value == expectedResponse.Answer : false ;
         }
 
+        private int GetUserResponsedCount
+        {
+            get
+            {
+                return userResponse.Numbers.Count + userResponse.Operands.Count;
+            }
+        }
         public bool ShouldTerminate(out TerminateCond term, out string message){
             //Calls IsCorrect or GotPotential
             // Normal Termination: IsCorrect() == true
             // Abnormal Termination: GotPotential == false, meaning no possible combination in the selection to finish the game.
             message = string.Empty;
             term = TerminateCond.NoTerminate;
+
             if (!IsCorrect())
             {
-                if (!GotPotential())
+                if (!GotPotential() && GetUserResponsedCount >= this.StartPotentialCheckThreshold)
                 {
                     term = TerminateCond.Impossible;
                     message = "NO POTENTIAL";
