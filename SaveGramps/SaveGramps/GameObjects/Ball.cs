@@ -90,7 +90,7 @@ namespace SaveGramps.GameObjects
         public NumberBall(Int32 value, Vector2 initialPosition, int xVelocityMultiplier)
             : base(initialPosition, xVelocityMultiplier)
         {
-            this.ballType = BallType.Operand;
+            this.ballType = BallType.Number;
             text = value.ToString();
         }
 

@@ -29,7 +29,23 @@ namespace GrandpaBrain
                     return "/";
             }
             throw new Exception("Invalid operand");
-
         }
+
+        public static Operands ConvertStringToOperands(String opString)
+        {
+            switch (opString)
+            {
+                case "+":
+                    return Operands.Add;
+                case "-":
+                    return Operands.Minus;
+                case "X":
+                    return Operands.Times;
+                case "/":
+                    return Operands.Divide;
+            }
+            throw new Exception("Invalid operation string");
+        }
+ 
     }
 }

@@ -113,11 +113,17 @@ namespace SaveGramps
 
                         // query balls from Grandpa's Brain
                         Response expectedResponse = Generator.GetExpectedResponseByLevel(lvHandler);
+                        hud = new HUD();
+                        hud.desiredTotal = expectedResponse.Answer;
                         answerInBrain = new Answer(expectedResponse);
                         
+                        //debug only
+                        int i = 0;
+
                         foreach(var num in expectedResponse.Numbers)
                         {
-                            Vector2 position = new Vector2((random.Next(0,1) == 0 )?random.Next(0, 400) : random.Next(400, 800), 400);
+                            //Vector2 position = new Vector2((random.Next(0,1) == 0 )?random.Next(0, 400) : random.Next(400, 800), 400);
+                            Vector2 position = new Vector2(100 * i, 100); i++;
                             Ball ball = new NumberBall(
                                     num,
                                     position,
@@ -125,9 +131,12 @@ namespace SaveGramps
                                     );
                             balls.Add(ball);
                         }
+
+                        i = 0;
                         foreach (var op in expectedResponse.Operands)
                         {
-                            Vector2 position = new Vector2((random.Next(0, 1) == 0) ? random.Next(0, 400) : random.Next(400, 800), 400);
+                            //Vector2 position = new Vector2((random.Next(0, 1) == 0) ? random.Next(0, 400) : random.Next(400, 800), 400);
+                            Vector2 position = new Vector2(100 * i, 300); i++;
                             Ball ball = new OperatorBall(
                                     op,
                                     position,
@@ -135,9 +144,8 @@ namespace SaveGramps
                                     );
                             balls.Add(ball);                            
                         }
-                        hud = new HUD();
+
                         gameState = GameStates.PlayLevel;
-                        hud.desiredTotal = 42;
                         break;
                     }
                 case GameStates.PlayLevel:
@@ -166,7 +174,7 @@ namespace SaveGramps
                             }
                             else if (hitBall.ballType == BallType.Operand)
                             {
-                                answerInBrain.AddOperand((Operands)Enum.Parse(typeof(Operands), hitBall.text, true));
+                                answerInBrain.AddOperand(OperandHelper.ConvertStringToOperands(hitBall.text));
                             }
                             else
                             {
@@ -184,6 +192,8 @@ namespace SaveGramps
                             switch (cond)
                             {
                                 case TerminateCond.Normal:
+                                    Console.WriteLine("WIN");
+                                    break;
                                 case TerminateCond.Impossible: //update to a display this new picture
                                 case TerminateCond.Timeout:
                                     gameState = GameStates.RefreshLevel;
@@ -201,7 +211,7 @@ namespace SaveGramps
                         for(int i = balls.Count - 1; i >= 0; i--)
                         {
                             Ball ball = balls[i];
-                            ball.Update(gameTime);
+                            //ball.Update(gameTime);
 
                             // check if ball is off the screen
                             if (((ball.position.X + Ball.Texture.Width) <= 0) || (ball.position.X > graphics.GraphicsDevice.Viewport.Width) ||
