@@ -80,20 +80,17 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="gramps_small.png">
+      <Name>gramps_small</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="RoundFont.spritefont">
       <Name>RoundFont</Name>
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
-    </Compile>
-    <Compile Include="engine_2.wav">
-      <Name>engine_2</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-    </Compile>
-    <Compile Include="hyperspace_activate.wav">
-      <Name>hyperspace_activate</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
     </Compile>
     <Compile Include="Windows Battery Critical.mp3">
       <Name>Windows Battery Critical</Name>

@@ -44,6 +44,12 @@ namespace SaveGramps.GameObjects
             Alternator = !Alternator;
         }
 
+        public void KillBall()
+        {
+            initialVelocity.X += 10;
+            initialVelocity.Y += 10;
+        }
+
         public void Update(GameTime gameTime)
         {
             Console.WriteLine("time: " + gameTime.ElapsedGameTime.TotalSeconds);
