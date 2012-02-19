@@ -206,12 +206,16 @@ namespace SaveGramps
                             {
                                 case TerminateCond.Normal:
                                     Console.WriteLine("WIN");
+                                    throw new Exception("WIN");
                                     break;
                                 case TerminateCond.Impossible: //update to a display this new picture
+                                    throw new Exception("IMpossible");
                                 case TerminateCond.Timeout:
+                                    throw new Exception("Timeout");
                                     gameState = GameStates.RefreshLevel;
                                     break;
                                 case TerminateCond.NoTerminate:
+                                    throw new Exception("NoTerminate");
                                     break;
                             }
                         }
