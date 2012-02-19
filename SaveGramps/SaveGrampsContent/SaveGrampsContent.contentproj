@@ -52,6 +52,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SmallBallPurple.png">
+      <Name>SmallBallPurple</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="background.png">
       <Name>background</Name>
       <Importer>TextureImporter</Importer>

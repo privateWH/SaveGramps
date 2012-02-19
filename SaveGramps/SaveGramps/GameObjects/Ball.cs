@@ -14,19 +14,21 @@ namespace SaveGramps.GameObjects
         public String text;
         public double time;
         public int xVelocityMultiplier;
-        static Texture2D texture;
+        public static Texture2D Texture { get; set; }
         public Vector2 initialVelocity;
 
         public static void Initialize(Texture2D _texture)
         {
-            texture = _texture;
+            Texture = _texture;
         }
         public Ball(Vector2 position, int xVelocityMultiplier)
         {
             Random random = new Random();
+            double x = random.NextDouble();
+            double y = random.NextDouble();
             this.position = position;
             this.xVelocityMultiplier = xVelocityMultiplier;
-            this.initialVelocity = new Vector2(random.Next(0,3), random.Next(9,12));
+            this.initialVelocity = new Vector2((float)(x * 3.5), 9 + (float)(y * 3.5));
         }
 
         public void Update(GameTime gameTime)
@@ -41,17 +43,17 @@ namespace SaveGramps.GameObjects
         {
             // TODO: Increase font size
             Vector2 FontOrigin = font.MeasureString(text) / 2;
-            spriteBatch.Draw(texture, this.position, Color.White);
-            float offsetX = texture.Width / 2 + position.X;
-            float offsetY = texture.Height / 2 + position.Y;
+            spriteBatch.Draw(Texture, this.position, Color.White);
+            float offsetX = Texture.Width / 2 + position.X;
+            float offsetY = Texture.Height / 2 + position.Y;
             Vector2 fontCenter = new Vector2(offsetX, offsetY);
             spriteBatch.DrawString(font, text, fontCenter, Color.Tomato, 0, FontOrigin, 1.0f, SpriteEffects.None, 0.5f);
         }
 
         public Boolean Hit(float x, float y)
         {
-            if (x > position.X && x < (position.X + texture.Width) &&
-                y > position.Y && y < (position.Y + texture.Height))
+            if (x > position.X && x < (position.X + Texture.Width) &&
+                y > position.Y && y < (position.Y + Texture.Height))
             {
                 // TODO: Show some animation?
                 return true;
