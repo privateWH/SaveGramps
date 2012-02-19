@@ -97,7 +97,6 @@ namespace SaveGramps
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
-=======
         }
 
         /// <summary>
@@ -120,7 +119,6 @@ namespace SaveGramps
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
->>>>>>> 53650299e2f66e2b35fea588e324b3ea1325f74c
             // TODO: Add your update logic here
             Ball hitBall = null;
             TouchCollection touchCollection = TouchPanel.GetState();
