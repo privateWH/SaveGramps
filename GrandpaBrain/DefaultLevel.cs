@@ -19,8 +19,9 @@ namespace GrandpaBrain
             }
             for (int i = 0; i < numOps; i++)
             {
-                r.Operands.Add(GeneratorHelper.GetRandomOp());
+                r.Operands.Add(Operands.Add);
             }
+            r.Answer = Answer.ComputeResponse(new List<int>(new int[]{ r.Numbers[0], r.Numbers[2]}), new List<Operands>(new Operands[]{r.Operands[0]})).Value;
             return r;
         }
     }
