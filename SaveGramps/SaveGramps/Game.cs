@@ -1,4 +1,4 @@
-#define DDEBUG
+//#define DDEBUG
 
 using System;
 using System.Collections.Generic;
@@ -227,7 +227,11 @@ namespace SaveGramps
                         for(int i = balls.Count - 1; i >= 0; i--)
                         {
                             Ball ball = balls[i];
+#if DDEBUG
                             //ball.Update(gameTime);
+#else
+                            ball.Update(gameTime);
+#endif
 
                             // check if ball is off the screen
                             if (((ball.position.X + Ball.Texture.Width) <= 0) || (ball.position.X > graphics.GraphicsDevice.Viewport.Width) ||
