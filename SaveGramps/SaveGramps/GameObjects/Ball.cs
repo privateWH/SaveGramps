@@ -17,15 +17,16 @@ namespace SaveGramps.GameObjects
         public static Texture2D Texture { get; set; }
         public Vector2 initialVelocity;
 
+        private static Random randomNum = new Random();
+
         public static void Initialize(Texture2D _texture)
         {
             Texture = _texture;
         }
         public Ball(Vector2 position, int xVelocityMultiplier)
         {
-            Random random = new Random();
-            double x = random.NextDouble();
-            double y = random.NextDouble();
+            double x = Ball.randomNum.NextDouble();
+            double y = Ball.randomNum.NextDouble();
             this.position = position;
             this.xVelocityMultiplier = xVelocityMultiplier;
             this.initialVelocity = new Vector2((float)(x * 3.5), 9 + (float)(y * 3.5));
