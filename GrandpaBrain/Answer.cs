@@ -63,15 +63,18 @@ namespace GrandpaBrain
             return true;
         }
 
-        private bool GotPotentialHelper(IList<int> listNum, IList<Operands> listOp)
+        public static bool ComputePotential(IList<int> nums, IList<Operands> ops, IList<int>numSpace, IList<Operands>opSpace, int answer){
+            return GotPotentialHelper(nums,ops,numSpace,opSpace,answer);
+        }
+        private static bool GotPotentialHelper(IList<int> listNum, IList<Operands> listOp,IList<int>expectNum, IList<Operands> expectOps,int answer)
         {
-            IList<int> remainNums = expectedResponse.Numbers.SkipWhile(it => listNum.Contains(it)).ToList();
-            IList<Operands> remainOp = expectedResponse.Operands.SkipWhile(it => listOp.Contains(it)).ToList();
+            IList<int> remainNums = expectNum.SkipWhile(it => listNum.Contains(it)).ToList();
+            IList<Operands> remainOp = expectOps.SkipWhile(it => listOp.Contains(it)).ToList();
             IList<int> nums = listNum;
             IList<Operands> ops = listOp;
             int? result = ComputeResponse(nums, ops);
-            if (result.HasValue && result.Value == expectedResponse.Answer) return true;
-            if (nums.Count != expectedResponse.Numbers.Count || ops.Count != expectedResponse.Operands.Count)
+            if (result.HasValue && result.Value == answer) return true;
+            if (nums.Count != expectNum.Count || ops.Count != expectOps.Count)
             {
                 bool addNum = (nums.Count - 1 < ops.Count); // determine if we need to add more num to the testing queue
                 if (addNum)
@@ -80,7 +83,7 @@ namespace GrandpaBrain
                     {
                         var newNums = nums.ToList();
                         newNums.Add(num);
-                        if (GotPotentialHelper(newNums, listOp)) return true;
+                        if (GotPotentialHelper(newNums, listOp,expectNum,expectOps,answer)) return true;
                     }
                 }
                 else
@@ -89,7 +92,7 @@ namespace GrandpaBrain
                     {
                         var newOps = ops.ToList();
                         newOps.Add(op);
-                        if (GotPotentialHelper(listNum, newOps)) return true;
+                        if (GotPotentialHelper(listNum, newOps, expectNum, expectOps, answer)) return true;
                     }
                 }
 
@@ -100,7 +103,7 @@ namespace GrandpaBrain
         private bool GotPotential()
         {
             if (isDirty){
-                potential = GotPotentialHelper(userResponse.Numbers, userResponse.Operands);
+                potential = GotPotentialHelper(userResponse.Numbers, userResponse.Operands,expectedResponse.Numbers,expectedResponse.Operands,expectedResponse.Answer);
             }
             //assuming IsCorrect = false or result == null;
             // this implies we missing some operand(s) or number(s) to make the "potential" equation to have a result
@@ -112,7 +115,7 @@ namespace GrandpaBrain
             int numOps = ops.Count;
             int numNum = numbers.Count;
 
-            if (numOps == numNum - 1 && numNum > 0 && numOps > 0)
+            if (numOps == numNum - 1) //adding numOps > 0 && numNum > 0 reinforce numNum > 2, however its possible that numbers[0] == answer.
             {
                 int i = 0;
                 int result = numbers[i];
