@@ -78,8 +78,10 @@ namespace GrandpaBrain
         }
         private static bool GotPotentialHelper(IList<int> listNum, IList<Operands> listOp,IList<int>expectNum, IList<Operands> expectOps,int answer)
         {
-            IList<int> remainNums = expectNum.SkipWhile(it => listNum.Contains(it)).ToList();
-            IList<Operands> remainOp = expectOps.SkipWhile(it => listOp.Contains(it)).ToList();
+            IList<int> remainNums = expectNum.ToList();
+            foreach (var num in listNum) { remainNums.Remove(num); }
+            IList<Operands> remainOp = expectOps.ToList();
+            foreach (var op in listOp) { remainOp.Remove(op); }
             IList<int> nums = listNum;
             IList<Operands> ops = listOp;
             int? result = ComputeResponse(nums, ops);
