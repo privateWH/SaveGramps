@@ -42,17 +42,26 @@ namespace GrandpaBrain
             return (result.HasValue) ? result.Value == expectedResponse.Answer : false ;
         }
 
-        public bool ShouldTerminate(out string message){
+        public bool ShouldTerminate(out TerminateCond term, out string message){
             //Calls IsCorrect or GotPotential
             // Normal Termination: IsCorrect() == true
             // Abnormal Termination: GotPotential == false, meaning no possible combination in the selection to finish the game.
             message = string.Empty;
+            term = TerminateCond.NoTerminate;
             if (!IsCorrect())
             {
-                if (GotPotential()) return false;
+                if (GotPotential())
+                {
+                    isDirty = false;
+                    return false;
+                }
+                term = TerminateCond.Impossible;
                 message = "NO POTENTIAL";
+                isDirty = false;
                 return true;
             }
+            term = TerminateCond.Normal;
+            isDirty = false;
             return true;
         }
 

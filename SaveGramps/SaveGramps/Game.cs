@@ -182,12 +182,38 @@ namespace SaveGramps
                         if (hitBall != null)
                         {
                             // call AddNumber or AddOperand
+                            if (hitBall.ballType == BallType.Number)
+                            {
+                                answerInBrain.AddNumber(int.Parse(hitBall.text));
+                            }
+                            else if (hitBall.ballType == BallType.Operand)
+                            {
+                                answerInBrain.AddOperand((Operands)Enum.Parse(typeof(Operands), hitBall.text, true));
+                            }
+                            else
+                            {
+                                throw new Exception("The hitBall.BallType is not yet implemented");
+                            }
                             balls.Remove(hitBall);
 
                         }
 
                         // check if answer is correct or
-
+                        string termMsg;
+                        TerminateCond cond;
+                        if (answerInBrain.ShouldTerminate(out cond,out termMsg))
+                        {
+                            switch (cond)
+                            {
+                                case TerminateCond.Normal:
+                                case TerminateCond.Impossible: //update to a display this new picture
+                                case TerminateCond.Timeout:
+                                    gameState = GameStates.RefreshLevel;
+                                    break;
+                                case TerminateCond.NoTerminate:
+                                    break;
+                            }
+                        }
                         // TODO: check if balls have left the screen
 
                         
