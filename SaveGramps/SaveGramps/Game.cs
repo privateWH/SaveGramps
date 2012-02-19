@@ -287,23 +287,7 @@ namespace SaveGramps
 
                         // TODO: end game state when balls left screen
                         // Update ball locations
-                        for(int i = balls.Count - 1; i >= 0; i--)
-                        {
-                            Ball ball = balls[i];
-#if DDEBUG
-                            //ball.Update(gameTime);
-#else
-                            ball.Update(gameTime);
-#endif
-
-                            // check if ball is off the screen
-                            if (((ball.position.X + Ball.Texture.Width) <= 0) || (ball.position.X > graphics.GraphicsDevice.Viewport.Width) ||
-                                (ball.position.Y > graphics.GraphicsDevice.Viewport.Height + 10))
-                            {
-                                balls.RemoveAt(i);
-                            }
-
-                        }
+                        UpdateAndRemoveOutOfBoundBalls(gameTime);
                         
                         if (balls.Count == 0)
                         {
@@ -362,11 +346,11 @@ namespace SaveGramps
                     bool isTerminate = answerInBrain.ShouldTerminate(out term, out termMsg);
                     if (isTerminate && term == TerminateCond.Impossible)
                     {
-                        // GOT to study ur SAT penality comes in
+                        // TODO: GOT to study ur SAT penality comes in
                         hud.wakeUpTotal--;
                     }
                     if (hud.wakeUpTotal == 0)
-                        gameState = GameStates.RefreshLevel; // update this to go to show the angel
+                        gameState = GameStates.RefreshLevel; // TODO: update this to go to show the angel
                     else
                         gameState = GameStates.RefreshLevel;
                     break;
@@ -405,6 +389,27 @@ namespace SaveGramps
             }
 
             base.Draw(gameTime);
+        }
+
+        private void UpdateAndRemoveOutOfBoundBalls(GameTime gameTime)
+        {
+            for (int i = balls.Count - 1; i >= 0; i--)
+            {
+                Ball ball = balls[i];
+#if DDEBUG
+                            //ball.Update(gameTime);
+#else
+                ball.Update(gameTime);
+#endif
+
+                // check if ball is off the screen
+                if (((ball.position.X + Ball.Texture.Width) <= 0) || (ball.position.X > graphics.GraphicsDevice.Viewport.Width) ||
+                    (ball.position.Y > graphics.GraphicsDevice.Viewport.Height + 10))
+                {
+                    balls.RemoveAt(i);
+                }
+
+            }
         }
     }
 
