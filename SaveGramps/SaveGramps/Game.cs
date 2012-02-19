@@ -38,7 +38,9 @@ namespace SaveGramps
         SpriteFont arialFont;
         GameStates gameState = GameStates.RefreshLevel;
         int lvHandler;
-        Answer answerInBrain; 
+        Answer answerInBrain;
+        AudioManager audioManager = new AudioManager();
+
         public Game()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -62,6 +64,7 @@ namespace SaveGramps
             DefaultLevel defaultLv = new DefaultLevel();
             lvHandler = Generator.RegisterLevel(defaultLv);
             base.Initialize();
+            audioManager.playBgMusic();
         }
 
         /// <summary>
