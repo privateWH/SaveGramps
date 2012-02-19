@@ -385,12 +385,12 @@ namespace SaveGramps
                 spriteBatch.Begin();
                 if (winOrLose)
                 {
-                    spriteBatch.DrawString(arialFont, "You Won!", new Vector2(400, 240), Color.Red);
+                    spriteBatch.DrawString(arialFont, "Good Job!", new Vector2(400, 140), Color.White);
                 }
                 else
                 {
 
-                    spriteBatch.DrawString(arialFont, "You Lose!", new Vector2(400, 240), Color.Red);
+                    spriteBatch.DrawString(arialFont, "Wrong Answer!", new Vector2(400, 140), Color.Red);
                 }
                 spriteBatch.End();
             }
