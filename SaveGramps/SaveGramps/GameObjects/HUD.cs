@@ -30,8 +30,8 @@ namespace SaveGramps.GameObjects
 
             Vector2 desiredTotalOrigin = font.MeasureString(desiredTotal.ToString()) / 2;
             spriteBatch.DrawString(font, desiredTotal.ToString(), DESIRED_TOTAL_POSITION, Color.Tomato, 0, desiredTotalOrigin, 1.0f, SpriteEffects.None, 0.5f);
-            for (int i=0; i < wakeUpTotal; i++){
-                spriteBatch.Draw(tx2WakeUpGrandPa, new Rectangle(600 + i * 35, 10, 30, 30),Color.White);
+            for (int i=wakeUpTotal; i > 0 ; --i){
+                spriteBatch.Draw(tx2WakeUpGrandPa, new Rectangle(580 + i * 55, 0, 50, 50),Color.White);
             }
         }
 

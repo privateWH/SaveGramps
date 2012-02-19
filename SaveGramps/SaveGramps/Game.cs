@@ -73,7 +73,7 @@ namespace SaveGramps
             audioManager.playBgMusic();
             hud = new HUD();
             hud.tx2WakeUpGrandPa = wakeUpGrandpa;
-            hud.wakeUpTotal = 5;
+            hud.wakeUpTotal = 3;
         }
 
         /// <summary>
