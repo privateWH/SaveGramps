@@ -35,7 +35,8 @@ namespace SaveGramps
         HUD hud;
         SpriteFont arialFont;
         GameStates gameState = GameStates.RefreshLevel;
-        
+        int lvHandler;
+        Answer answerInBrain; 
         public Game()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -56,6 +57,8 @@ namespace SaveGramps
         /// </summary>
         protected override void Initialize()
         {
+            DefaultLevel defaultLv = new DefaultLevel();
+            lvHandler = Generator.RegisterLevel(defaultLv);
             base.Initialize();
         }
 
@@ -94,6 +97,30 @@ namespace SaveGramps
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
+=======
+        }
+
+        /// <summary>
+        /// UnloadContent will be called once per game and is the place to unload
+        /// all content.
+        /// </summary>
+        protected override void UnloadContent()
+        {
+            // TODO: Unload any non ContentManager content here
+        }
+
+        /// <summary>
+        /// Allows the game to run logic such as updating the world,
+        /// checking for collisions, gathering input, and playing audio.
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        protected override void Update(GameTime gameTime)
+        {
+            // Allows the game to exit
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
+                this.Exit();
+
+>>>>>>> 53650299e2f66e2b35fea588e324b3ea1325f74c
             // TODO: Add your update logic here
             Ball hitBall = null;
             TouchCollection touchCollection = TouchPanel.GetState();
@@ -109,12 +136,24 @@ namespace SaveGramps
                         balls = new List<Ball>();
 
                         // query balls from Grandpa's Brain
-
-                        for (int i = 0; i < 5; i++)
+                        Response expectedResponse = Generator.GetExpectedResponseByLevel(lvHandler);
+                        answerInBrain = new Answer(expectedResponse);
+                        
+                        foreach(var num in expectedResponse.Numbers)
                         {
-                            Vector2 position = new Vector2((i % 2 == 0) ? random.Next(0, 400) : random.Next(400, 800), 400);
+                            Vector2 position = new Vector2((random.Next(0,1) == 0 )?random.Next(0, 400) : random.Next(400, 800), 400);
                             Ball ball = new NumberBall(
-                                    random.Next(1, 10),
+                                    num,
+                                    position,
+                                    (position.X > this.graphics.GraphicsDevice.Viewport.Width / 2) ? -1 : 1
+                                    );
+                            balls.Add(ball);
+                        }
+                        foreach (var op in expectedResponse.Operands)
+                        {
+                            Vector2 position = new Vector2((random.Next(0, 1) == 0) ? random.Next(0, 400) : random.Next(400, 800), 400);
+                            Ball ball = new OperatorBall(
+                                    op,
                                     position,
                                     (position.X > this.graphics.GraphicsDevice.Viewport.Width / 2) ? -1 : 1
                                     );
