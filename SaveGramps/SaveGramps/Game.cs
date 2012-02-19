@@ -116,7 +116,6 @@ namespace SaveGramps
                 case GameStates.RefreshLevel:
                     {
                         int maxRightPosition = graphics.GraphicsDevice.Viewport.Width - Ball.Texture.Width;
-                        bool alternateSideOfScreen = true;
 
                         balls = new List<Ball>();
 
@@ -127,8 +126,6 @@ namespace SaveGramps
                         answerInBrain = new Answer(expectedResponse);
 
                         int numOfBalls = expectedResponse.Numbers.Count() + expectedResponse.Operands.Count();
-                        //Stack<int> xPositions = GetRandomXPositions(numOfBalls
-
                         int viewWidth = graphics.GraphicsDevice.Viewport.Width - Ball.Texture.Width;
                         int sizeOfDivision = viewWidth / numOfBalls;
 
@@ -152,9 +149,7 @@ namespace SaveGramps
                             Vector2 position = new Vector2(100 * i, 100); i++;
 #else
                             xPos = HelperMethods.GetRandomElement<int>(positions);
-                            //Vector2 position = new Vector2(alternateSideOfScreen ? gRandom.Next(0, 300) : gRandom.Next(500, maxRightPosition), 485);
                             Vector2 position = new Vector2(xPos, 485);
-                            alternateSideOfScreen = alternateSideOfScreen ? false : true;
 #endif
                             Ball ball = new NumberBall(
                                     num,
@@ -175,9 +170,7 @@ namespace SaveGramps
                             Vector2 position = new Vector2(100 * i, 300); i++;
 #else
                             xPos = HelperMethods.GetRandomElement<int>(positions);
-                            //Vector2 position = new Vector2(alternateSideOfScreen ? gRandom.Next(0, 300) : gRandom.Next(500, maxRightPosition), 485);
                             Vector2 position = new Vector2(xPos, 485);
-                            alternateSideOfScreen = alternateSideOfScreen ? false : true;
 #endif
                             Ball ball = new OperatorBall(
                                     op,
