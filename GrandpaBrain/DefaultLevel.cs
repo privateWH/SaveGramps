@@ -11,7 +11,7 @@ namespace GrandpaBrain
         {
             Response r = new Response();
             Random rnd = new Random();
-            int numBalls = 4;
+            int numBalls = 3;
             int numOps = 2;
             for (int i = 0; i < numBalls; i++)
             {
@@ -21,7 +21,8 @@ namespace GrandpaBrain
             {
                 r.Operands.Add(Operands.Add);
             }
-            r.Answer = Answer.ComputeResponse(new List<int>(new int[]{ r.Numbers[0], r.Numbers[2]}), new List<Operands>(new Operands[]{r.Operands[0]})).Value;
+            r.Operands[1] = Operands.Minus;
+            r.Answer = Answer.ComputeResponse(new List<int>(new int[]{ r.Numbers[0], r.Numbers[1]}), new List<Operands>(new Operands[]{r.Operands[0]})).Value;
             return r;
         }
     }

@@ -34,7 +34,8 @@ namespace SaveGramps
         List<Ball> balls ;
         SpriteFont arialFont;
         GameStates gameState = GameStates.RefreshLevel;
-        
+        int lvHandler;
+        Answer answerInBrain; 
         public Game()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -55,6 +56,8 @@ namespace SaveGramps
         /// </summary>
         protected override void Initialize()
         {
+            DefaultLevel defaultLv = new DefaultLevel();
+            lvHandler = Generator.RegisterLevel(defaultLv);
             base.Initialize();
         }
 
@@ -107,18 +110,29 @@ namespace SaveGramps
                         balls = new List<Ball>();
 
                         // query balls from Grandpa's Brain
-
-                        for (int i = 0; i < 5; i++)
+                        Response expectedResponse = Generator.GetExpectedResponseByLevel(lvHandler);
+                        answerInBrain = new Answer(expectedResponse);
+                        
+                        foreach(var num in expectedResponse.Numbers)
                         {
-                            Vector2 position = new Vector2((i % 2 == 0) ? random.Next(0, 400) : random.Next(400, 800), 400);
+                            Vector2 position = new Vector2((random.Next(0,1) == 0 )?random.Next(0, 400) : random.Next(400, 800), 400);
                             Ball ball = new NumberBall(
-                                    random.Next(1, 10),
+                                    num,
                                     position,
                                     (position.X > this.graphics.GraphicsDevice.Viewport.Width / 2) ? -1 : 1
                                     );
                             balls.Add(ball);
                         }
-
+                        foreach (var op in expectedResponse.Operands)
+                        {
+                            Vector2 position = new Vector2((random.Next(0, 1) == 0) ? random.Next(0, 400) : random.Next(400, 800), 400);
+                            Ball ball = new OperatorBall(
+                                    op,
+                                    position,
+                                    (position.X > this.graphics.GraphicsDevice.Viewport.Width / 2) ? -1 : 1
+                                    );
+                            balls.Add(ball);
+                        }
                         gameState = GameStates.PlayLevel;
                         break;
                     }
