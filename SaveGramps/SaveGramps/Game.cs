@@ -1,4 +1,4 @@
-//#define DDEBUG
+// #define DDEBUG
 
 using System;
 using System.Collections.Generic;
@@ -21,6 +21,7 @@ namespace SaveGramps
         Start,
         RefreshLevel,
         PlayLevel,
+        RoundReward,
         EndLevel
     }
 
@@ -29,6 +30,7 @@ namespace SaveGramps
     /// </summary>
     public class Game : Microsoft.Xna.Framework.Game
     {
+        static Random gRandom = new Random();
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Texture2D ballTexture;
@@ -40,7 +42,8 @@ namespace SaveGramps
         int lvHandler;
         Answer answerInBrain;
         AudioManager audioManager = new AudioManager();
-
+        TimeSpan roundRewardMessageTimeout = new TimeSpan(0, 0, 1);
+        TimeSpan accumulateTime = new TimeSpan(0, 0, 0);
         public Game()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -65,6 +68,7 @@ namespace SaveGramps
             lvHandler = Generator.RegisterLevel(defaultLv);
             base.Initialize();
             audioManager.playBgMusic();
+            hud = new HUD();
         }
 
         /// <summary>
@@ -112,16 +116,30 @@ namespace SaveGramps
                     break;
                 case GameStates.RefreshLevel:
                     {
-                        Random random = new Random();
+                        int maxRightPosition = graphics.GraphicsDevice.Viewport.Width - Ball.Texture.Width;
 
                         balls = new List<Ball>();
 
                         // query balls from Grandpa's Brain
                         Response expectedResponse = Generator.GetExpectedResponseByLevel(lvHandler);
-                        hud = new HUD();
+
                         hud.desiredTotal = expectedResponse.Answer;
                         answerInBrain = new Answer(expectedResponse);
-                        
+
+                        int numOfBalls = expectedResponse.Numbers.Count() + expectedResponse.Operands.Count();
+                        int viewWidth = graphics.GraphicsDevice.Viewport.Width - Ball.Texture.Width;
+                        int sizeOfDivision = viewWidth / numOfBalls;
+
+                        int buffer = sizeOfDivision / 3;
+                        List<int> positions = new List<int>();
+                        for (int i = 0; i < numOfBalls; i++)
+                        {
+                            int startPos = i * sizeOfDivision;
+                            int xVal = gRandom.Next(startPos + buffer, (startPos + sizeOfDivision) - buffer);
+                            positions.Add(xVal);
+                        }
+
+                        int xPos = 0;
 #if DDEBUG
                         int i = 0;
 #endif
@@ -131,7 +149,8 @@ namespace SaveGramps
 #if DDEBUG
                             Vector2 position = new Vector2(100 * i, 100); i++;
 #else
-                            Vector2 position = new Vector2((random.Next(0, 1) == 0) ? random.Next(0, 400) : random.Next(400, 800), 400);
+                            xPos = HelperMethods.GetRandomElement<int>(positions);
+                            Vector2 position = new Vector2(xPos, 485);
 #endif
                             Ball ball = new NumberBall(
                                     num,
@@ -151,7 +170,8 @@ namespace SaveGramps
 #if DDEBUG
                             Vector2 position = new Vector2(100 * i, 300); i++;
 #else
-                            Vector2 position = new Vector2((random.Next(0, 1) == 0) ? random.Next(0, 400) : random.Next(400, 800), 400);
+                            xPos = HelperMethods.GetRandomElement<int>(positions);
+                            Vector2 position = new Vector2(xPos, 485);
 #endif
                             Ball ball = new OperatorBall(
                                     op,
@@ -164,6 +184,14 @@ namespace SaveGramps
                         gameState = GameStates.PlayLevel;
                         break;
                     }
+                case GameStates.RoundReward:
+                    this.accumulateTime += gameTime.ElapsedGameTime;
+                    if (this.accumulateTime >= this.roundRewardMessageTimeout)
+                    {
+                        accumulateTime = new TimeSpan(0, 0, 0);
+                        gameState = GameStates.RefreshLevel;
+                    }
+                    break;
                 case GameStates.PlayLevel:
                     {
                         foreach (TouchLocation tl in touchCollection)
@@ -208,21 +236,23 @@ namespace SaveGramps
                             switch (cond)
                             {
                                 case TerminateCond.Normal:
-                                    Console.WriteLine("WIN");
+                                    hud.runningTotal = hud.runningTotal + 1;
+                                    gameState = GameStates.RoundReward;
                                     break;
                                 case TerminateCond.Impossible: //update to a display this new picture
+                                    gameState = GameStates.RoundReward;
+                                    break;
                                 case TerminateCond.Timeout:
+                                    throw new Exception("Timeout");
                                     gameState = GameStates.RefreshLevel;
                                     break;
                                 case TerminateCond.NoTerminate:
+                                    throw new Exception("NoTerminate");
                                     break;
                             }
                         }
-                        // TODO: check if balls have left the screen
 
-                        
-                        hud.runningTotal = 24;
-
+                        // TODO: end game state when balls left screen
                         // Update ball locations
                         for(int i = balls.Count - 1; i >= 0; i--)
                         {
@@ -279,6 +309,20 @@ namespace SaveGramps
                 {
                     break;
                 }
+                case GameStates.RoundReward:
+                {
+                    spriteBatch.Begin();
+                    TerminateCond cond;
+                    string condMsg;
+                    bool isTerminate = answerInBrain.ShouldTerminate(out cond, out condMsg);
+                    if (isTerminate && cond == TerminateCond.Normal){
+                        spriteBatch.DrawString(arialFont,"You Won!",new Vector2(400,240),Color.Red);
+                    } else if (isTerminate && cond== TerminateCond.Impossible){
+                        spriteBatch.DrawString(arialFont, "You Lose!", new Vector2(400, 240), Color.Red);
+                    }
+                    spriteBatch.End();
+                    break;
+                }
                 case GameStates.PlayLevel:
                 {
                     spriteBatch.Begin();
@@ -297,6 +341,23 @@ namespace SaveGramps
             }
 
             base.Draw(gameTime);
+        }
+    }
+
+    public static class HelperMethods
+    {
+        private static Random random = new Random();
+
+        public static T GetRandomElement<T>(this List<T> list)
+        {
+            if (list.Count() == 0)
+            {
+                throw new Exception("no more elements in list");
+            }
+            int pos = random.Next(list.Count());
+            T result = list[pos];
+            list.RemoveAt(pos);
+            return result;
         }
     }
 }

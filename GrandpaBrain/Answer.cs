@@ -12,6 +12,8 @@ namespace GrandpaBrain
         private Response userResponse = new Response();
         private bool isDirty = false;
         private int? result = null;
+        private bool potential = true;
+        public int StartPotentialCheckThreshold =3;
 
         private Answer(){ //internal test only
         }
@@ -37,60 +39,87 @@ namespace GrandpaBrain
             if (isDirty)
             {
                 result = ComputeResponse(userResponse.Numbers,userResponse.Operands);
-                isDirty = false;
             }
             return (result.HasValue) ? result.Value == expectedResponse.Answer : false ;
         }
 
+        private int GetUserResponsedCount
+        {
+            get
+            {
+                return userResponse.Numbers.Count + userResponse.Operands.Count;
+            }
+        }
         public bool ShouldTerminate(out TerminateCond term, out string message){
             //Calls IsCorrect or GotPotential
             // Normal Termination: IsCorrect() == true
             // Abnormal Termination: GotPotential == false, meaning no possible combination in the selection to finish the game.
             message = string.Empty;
             term = TerminateCond.NoTerminate;
+
             if (!IsCorrect())
             {
-                if (GotPotential())
+                if (!GotPotential() && GetUserResponsedCount >= this.StartPotentialCheckThreshold)
                 {
-                    isDirty = false;
-                    return false;
+                    term = TerminateCond.Impossible;
+                    message = "NO POTENTIAL";
+                    return true; // signal to terminate
                 }
-                term = TerminateCond.Impossible;
-                message = "NO POTENTIAL";
                 isDirty = false;
-                return true;
+                return false; // signal there is potential, so don't terminate.
             }
             term = TerminateCond.Normal;
             isDirty = false;
             return true;
         }
 
-        private bool GotPotentialHelper(IList<int> listNum,IList<Operands> listOp)
+        public static bool ComputePotential(IList<int> nums, IList<Operands> ops, IList<int>numSpace, IList<Operands>opSpace, int answer){
+            return GotPotentialHelper(nums,ops,numSpace,opSpace,answer);
+        }
+        private static bool GotPotentialHelper(IList<int> listNum, IList<Operands> listOp,IList<int>expectNum, IList<Operands> expectOps,int answer)
         {
-            IList<int> remainNum = expectedResponse.Numbers.SkipWhile(it => listNum.Contains(it)).ToList();
-            IList<Operands> remainOp = expectedResponse.Operands.SkipWhile(it => listOp.Contains(it)).ToList();
-            int? result = ComputeResponse(listNum, listOp);
-            if (result.HasValue && result.Value == expectedResponse.Answer) return true;
-            foreach(var op in remainOp){
-                    var newOp = listOp.ToList();
-                    newOp.Add(op);
-                    if (GotPotentialHelper(listNum.ToList(), newOp)) return true;
-                    foreach (var num in remainNum)
+            IList<int> remainNums = expectNum.ToList();
+            foreach (var num in listNum) { remainNums.Remove(num); }
+            IList<Operands> remainOp = expectOps.ToList();
+            foreach (var op in listOp) { remainOp.Remove(op); }
+            IList<int> nums = listNum;
+            IList<Operands> ops = listOp;
+            int? result = ComputeResponse(nums, ops);
+            if (result.HasValue && result.Value == answer) return true;
+            if (nums.Count != expectNum.Count || ops.Count != expectOps.Count)
+            {
+                bool addNum = (nums.Count - 1 < ops.Count); // determine if we need to add more num to the testing queue
+                if (addNum)
+                {
+                    foreach (var num in remainNums)
                     {
-                        var newNums = listNum.ToList();
+                        var newNums = nums.ToList();
                         newNums.Add(num);
-                        if (GotPotentialHelper(newNums, newOp)) return true;
+                        if (GotPotentialHelper(newNums, listOp,expectNum,expectOps,answer)) return true;
                     }
+                }
+                else
+                {
+                    foreach (var op in remainOp)
+                    {
+                        var newOps = ops.ToList();
+                        newOps.Add(op);
+                        if (GotPotentialHelper(listNum, newOps, expectNum, expectOps, answer)) return true;
+                    }
+                }
+
             }
             return false;
         }
 
         private bool GotPotential()
         {
+            if (isDirty){
+                potential = GotPotentialHelper(userResponse.Numbers, userResponse.Operands,expectedResponse.Numbers,expectedResponse.Operands,expectedResponse.Answer);
+            }
             //assuming IsCorrect = false or result == null;
             // this implies we missing some operand(s) or number(s) to make the "potential" equation to have a result
-            if (userResponse.Numbers.Count == 0 || userResponse.Operands.Count == 0) return true;
-            return GotPotentialHelper(userResponse.Numbers, userResponse.Operands);
+            return potential; 
         }
 
         public static int? ComputeResponse(IList<int> numbers, IList<Operands> ops)
@@ -98,7 +127,7 @@ namespace GrandpaBrain
             int numOps = ops.Count;
             int numNum = numbers.Count;
 
-            if (numOps == numNum - 1 && numNum > 0 && numOps > 0)
+            if (numOps == numNum - 1) //adding numOps > 0 && numNum > 0 reinforce numNum > 2, however its possible that numbers[0] == answer.
             {
                 int i = 0;
                 int result = numbers[i];
