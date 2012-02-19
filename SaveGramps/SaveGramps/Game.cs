@@ -264,8 +264,7 @@ namespace SaveGramps
                                 case TerminateCond.Impossible: //update to a display this new picture
                                     drawMessage = true;
                                     winOrLose = false;
-                                    gameState = GameStates.RefreshLevel;
-                                    //gameState = GameStates.RoundReward;
+                                    gameState = GameStates.RoundReward;
                                     break;
                                 case TerminateCond.Timeout:
                                     throw new Exception("Timeout");
@@ -350,6 +349,17 @@ namespace SaveGramps
                 }
                 case GameStates.RoundReward:
                 {
+                    TerminateCond term; string termMsg;
+                    bool isTerminate = answerInBrain.ShouldTerminate(out term, out termMsg);
+                    if (isTerminate && term == TerminateCond.Impossible)
+                    {
+                        // GOT to study ur SAT penality comes in
+                        hud.wakeUpTotal--;
+                    }
+                    if (hud.wakeUpTotal == 0)
+                        gameState = GameStates.RefreshLevel; // update this to go to show the angel
+                    else
+                        gameState = GameStates.RefreshLevel;
                     break;
                 }
                 case GameStates.PlayLevel:
