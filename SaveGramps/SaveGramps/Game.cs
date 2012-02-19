@@ -240,7 +240,8 @@ namespace SaveGramps
                             {
                                 throw new Exception("The hitBall.BallType is not yet implemented");
                             }
-                            balls.Remove(hitBall);
+                            hitBall.KillBall();
+                            //balls.Remove(hitBall);
 
                         }
 
@@ -255,13 +256,21 @@ namespace SaveGramps
                                     hud.runningTotal = hud.runningTotal + 1;
                                     drawMessage = true;
                                     winOrLose = true;
-                                    gameState = GameStates.RefreshLevel;
+                                    foreach (Ball b in balls)
+                                    {
+                                        b.KillBall();
+                                    }
+                                    //gameState = GameStates.RefreshLevel;
                                     //gameState = GameStates.RoundReward;
                                     break;
                                 case TerminateCond.Impossible: //update to a display this new picture
                                     drawMessage = true;
                                     winOrLose = false;
-                                    gameState = GameStates.RefreshLevel;
+                                    foreach (Ball b in balls)
+                                    {
+                                        b.KillBall();
+                                    }
+                                    //gameState = GameStates.RefreshLevel;
                                     //gameState = GameStates.RoundReward;
                                     break;
                                 case TerminateCond.Timeout:
