@@ -65,6 +65,7 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GameObjects\AudioManager.cs" />
     <Compile Include="GameObjects\Ball.cs" />
     <Compile Include="GameObjects\HUD.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
