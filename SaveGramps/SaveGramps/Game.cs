@@ -116,7 +116,6 @@ namespace SaveGramps
                 case GameStates.RefreshLevel:
                     {
                         int maxRightPosition = graphics.GraphicsDevice.Viewport.Width - Ball.Texture.Width;
-                        bool alternateSideOfScreen = true;
 
                         balls = new List<Ball>();
 
@@ -125,7 +124,21 @@ namespace SaveGramps
                         hud = new HUD();
                         hud.desiredTotal = expectedResponse.Answer;
                         answerInBrain = new Answer(expectedResponse);
-                        
+
+                        int numOfBalls = expectedResponse.Numbers.Count() + expectedResponse.Operands.Count();
+                        int viewWidth = graphics.GraphicsDevice.Viewport.Width - Ball.Texture.Width;
+                        int sizeOfDivision = viewWidth / numOfBalls;
+
+                        int buffer = sizeOfDivision / 3;
+                        List<int> positions = new List<int>();
+                        for (int i = 0; i < numOfBalls; i++)
+                        {
+                            int startPos = i * sizeOfDivision;
+                            int xVal = gRandom.Next(startPos + buffer, (startPos + sizeOfDivision) - buffer);
+                            positions.Add(xVal);
+                        }
+
+                        int xPos = 0;
 #if DDEBUG
                         int i = 0;
 #endif
@@ -135,8 +148,8 @@ namespace SaveGramps
 #if DDEBUG
                             Vector2 position = new Vector2(100 * i, 100); i++;
 #else
-                            Vector2 position = new Vector2(alternateSideOfScreen ? gRandom.Next(0, 300) : gRandom.Next(500, maxRightPosition), 485);
-                            alternateSideOfScreen = alternateSideOfScreen ? false : true;
+                            xPos = HelperMethods.GetRandomElement<int>(positions);
+                            Vector2 position = new Vector2(xPos, 485);
 #endif
                             Ball ball = new NumberBall(
                                     num,
@@ -156,8 +169,8 @@ namespace SaveGramps
 #if DDEBUG
                             Vector2 position = new Vector2(100 * i, 300); i++;
 #else
-                            Vector2 position = new Vector2(alternateSideOfScreen ? gRandom.Next(0, 300) : gRandom.Next(500, maxRightPosition), 485);
-                            alternateSideOfScreen = alternateSideOfScreen ? false : true;
+                            xPos = HelperMethods.GetRandomElement<int>(positions);
+                            Vector2 position = new Vector2(xPos, 485);
 #endif
                             Ball ball = new OperatorBall(
                                     op,
@@ -327,6 +340,23 @@ namespace SaveGramps
             }
 
             base.Draw(gameTime);
+        }
+    }
+
+    public static class HelperMethods
+    {
+        private static Random random = new Random();
+
+        public static T GetRandomElement<T>(this List<T> list)
+        {
+            if (list.Count() == 0)
+            {
+                throw new Exception("no more elements in list");
+            }
+            int pos = random.Next(list.Count());
+            T result = list[pos];
+            list.RemoveAt(pos);
+            return result;
         }
     }
 }

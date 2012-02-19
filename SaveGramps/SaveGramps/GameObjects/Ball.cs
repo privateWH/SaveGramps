@@ -21,9 +21,10 @@ namespace SaveGramps.GameObjects
         public double time;
         public int xVelocityMultiplier;
         public static Texture2D Texture { get; set; }
+        public static bool Alternator { get; set; }
         public Vector2 initialVelocity;
         public BallType ballType { get; set; }
-
+        public float Acceleration { get; set; }
 
         private static Random randomNum = new Random();
 
@@ -38,13 +39,15 @@ namespace SaveGramps.GameObjects
             double y = Ball.randomNum.NextDouble();
             this.position = position;
             this.xVelocityMultiplier = xVelocityMultiplier;
-            this.initialVelocity = new Vector2((float)(x * 2.5), 9 + (float)(y * 1.5));
+            this.initialVelocity = new Vector2((float)(x * .05), (float)(4.0 + y * .01));
+            this.Acceleration = (float)(((Alternator) ? 1 : -1) * Ball.randomNum.NextDouble() * .1 + 1.62);
+            Alternator = !Alternator;
         }
 
         public void Update(GameTime gameTime)
         {
             Console.WriteLine("time: " + gameTime.ElapsedGameTime.TotalSeconds);
-            this.position.Y = this.position.Y + (float)(-1 * initialVelocity.Y * time + 7.5 * time * time / 2);// + Ball.viewPort.Height - texture.Height;
+            this.position.Y = this.position.Y + (float)(-1 * initialVelocity.Y * time + Acceleration * time * time / 2);// + Ball.viewPort.Height - texture.Height;
             this.position.X = this.position.X + (float)(xVelocityMultiplier * initialVelocity.X * time);
             this.time = this.time + gameTime.ElapsedGameTime.TotalSeconds;
         }
