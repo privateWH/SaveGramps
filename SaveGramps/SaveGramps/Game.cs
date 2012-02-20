@@ -41,13 +41,15 @@ namespace SaveGramps
         List<Ball> balls ;
         HUD hud;
         SpriteFont arialFont;
-        GameStates gameState = GameStates.RefreshLevel;
+        GameStates gameState = GameStates.Start;
         int lvHandler;
         Answer answerInBrain;
         AudioManager audioManager = new AudioManager();
         TimeSpan roundRewardMessageTimeout = new TimeSpan(0, 0, 1);
         TimeSpan accumulateTime = new TimeSpan(0, 0, 0);
         Texture2D grampsHead;
+        Rectangle startPos;
+
         bool drawMessage = false;
         bool winOrLose = false;
         public Game()
@@ -78,6 +80,7 @@ namespace SaveGramps
             audioManager.playBgMusic();
             hud.tx2WakeUpGrandPa = wakeUpGrandpa;
             hud.wakeUpTotal = 3;
+            startPos = new Rectangle(550, 50, 112, 112);
         }
 
         /// <summary>
@@ -123,7 +126,13 @@ namespace SaveGramps
             switch (gameState)
             {
                 case GameStates.Start:
-                    gameState = GameStates.RefreshLevel;
+                    foreach (TouchLocation tl in touchCollection)
+                    {
+                        if (startPos.Contains((int)tl.Position.X, (int)tl.Position.Y))
+                        {
+                            gameState = GameStates.RefreshLevel;
+                        }
+                    }
                     break;
                 case GameStates.RefreshLevel:
                     {
@@ -350,6 +359,15 @@ namespace SaveGramps
             {
                 case GameStates.Start:
                 {
+                    float offsetX = ballTexture.Width / 2 + startPos.X;
+                    float offsetY = ballTexture.Height / 2 + startPos.Y;
+                    Vector2 fontCenter = new Vector2(offsetX, offsetY);
+                    
+                    spriteBatch.Begin();
+                    spriteBatch.Draw(grampsHead, new Rectangle(0,0,500,480), Color.White);
+                    spriteBatch.Draw(ballTexture, startPos, Color.White);
+                    spriteBatch.DrawString(arialFont, "Start", fontCenter, Color.White, 0, arialFont.MeasureString("Start") / 2, 1.0f, SpriteEffects.None, 0.5f);
+                    spriteBatch.End();
                     break;
                 }
                 case GameStates.RefreshLevel:
