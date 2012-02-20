@@ -367,8 +367,8 @@ namespace SaveGramps
                     {
                         ball.Draw(arialFont, spriteBatch);
                     }
-                    hud.Draw(arialFont, spriteBatch);
-                    hud.DrawRoundTotal(roundFont, spriteBatch);
+                    hud.Draw(arialFont, spriteBatch, gameTime);
+                    hud.DrawRoundTotal(arialFont, spriteBatch);
                     spriteBatch.End();
                     break;
                 }
