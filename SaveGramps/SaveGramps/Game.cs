@@ -388,6 +388,10 @@ namespace SaveGramps
                 case GameStates.RoundEnd:
                 case GameStates.PlayLevel:
                 {
+                    spriteBatch.Begin();
+                    spriteBatch.Draw(grampsHead, new Vector2(0, 350), Color.White);
+                    spriteBatch.End();
+
                     DrawRewardMessage();
                     spriteBatch.Begin();
                     foreach (Ball ball in balls)
