@@ -65,7 +65,9 @@ namespace SaveGramps.GameObjects
             float offsetX = Texture.Width / 2 + position.X;
             float offsetY = Texture.Height / 2 + position.Y;
             Vector2 fontCenter = new Vector2(offsetX, offsetY);
-            spriteBatch.DrawString(font, text, fontCenter, Color.Tomato, 0, FontOrigin, 1.0f, SpriteEffects.None, 0.5f);
+            Vector2 shadowFontCenter = new Vector2(offsetX+2,offsetY+2);
+            spriteBatch.DrawString(font, text, shadowFontCenter, Color.Purple, 0, FontOrigin, 1.0f, SpriteEffects.None, 0.5f);
+            spriteBatch.DrawString(font, text, fontCenter, Color.White, 0, FontOrigin, 1.0f, SpriteEffects.None, 0.5f);
         }
 
         public Boolean Hit(float x, float y)

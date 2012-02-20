@@ -41,13 +41,17 @@ namespace SaveGramps
         List<Ball> balls ;
         HUD hud;
         SpriteFont arialFont;
-        GameStates gameState = GameStates.RefreshLevel;
+        GameStates gameState = GameStates.Start;
         int lvHandler;
         Answer answerInBrain;
         AudioManager audioManager = new AudioManager();
         TimeSpan roundRewardMessageTimeout = new TimeSpan(0, 0, 1);
         TimeSpan accumulateTime = new TimeSpan(0, 0, 0);
         Texture2D grampsHead;
+        Rectangle startPos;
+        Rectangle aboutPos;
+        Rectangle settingPos;
+
         bool drawMessage = false;
         bool winOrLose = false;
         public Game()
@@ -78,6 +82,9 @@ namespace SaveGramps
             audioManager.playBgMusic();
             hud.tx2WakeUpGrandPa = wakeUpGrandpa;
             hud.wakeUpTotal = 3;
+            startPos = new Rectangle(550, 50, 112, 112);
+            aboutPos = new Rectangle(550, 350, 112, 112);
+            settingPos = new Rectangle(550, 200, 112, 112);
         }
 
         /// <summary>
@@ -123,7 +130,13 @@ namespace SaveGramps
             switch (gameState)
             {
                 case GameStates.Start:
-                    gameState = GameStates.RefreshLevel;
+                    foreach (TouchLocation tl in touchCollection)
+                    {
+                        if (startPos.Contains((int)tl.Position.X, (int)tl.Position.Y))
+                        {
+                            gameState = GameStates.RefreshLevel;
+                        }
+                    }
                     break;
                 case GameStates.RefreshLevel:
                     {
@@ -334,6 +347,14 @@ namespace SaveGramps
             }
         }
 
+        protected void DrawSettingsBall(string text, Rectangle position)
+        {
+            float offsetX = ballTexture.Width / 2 + position.X;
+            float offsetY = ballTexture.Height / 2 + position.Y;
+            Vector2 fontCenter = new Vector2(offsetX, offsetY);
+            spriteBatch.Draw(ballTexture, position, Color.White);
+            spriteBatch.DrawString(arialFont, text, fontCenter, Color.White, 0, arialFont.MeasureString(text) / 2, 1.0f, SpriteEffects.None, 0.5f);
+        }
         /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>
@@ -350,6 +371,12 @@ namespace SaveGramps
             {
                 case GameStates.Start:
                 {
+                    spriteBatch.Begin();
+                    spriteBatch.Draw(grampsHead, new Rectangle(0,0,500,480), Color.White);
+                    DrawSettingsBall("Start", startPos);
+                    DrawSettingsBall("About", aboutPos);
+                    DrawSettingsBall("Settings", settingPos);
+                    spriteBatch.End();
                     break;
                 }
                 case GameStates.RefreshLevel:
@@ -371,8 +398,8 @@ namespace SaveGramps
                     {
                         ball.Draw(arialFont, spriteBatch);
                     }
-                    hud.Draw(arialFont, spriteBatch);
-                    hud.DrawRoundTotal(roundFont, spriteBatch);
+                    hud.Draw(arialFont, spriteBatch, gameTime);
+                    hud.DrawRoundTotal(arialFont, spriteBatch);
                     spriteBatch.End();
                     break;
                 }
@@ -396,8 +423,7 @@ namespace SaveGramps
                 }
                 else
                 {
-
-                    spriteBatch.DrawString(arialFont, "Wrong Answer!", new Vector2(400, 140), Color.Red);
+                    spriteBatch.DrawString(arialFont, "Oops, try again!", new Vector2(400, 140), Color.White);
                 }
                 spriteBatch.End();
             }
