@@ -37,7 +37,7 @@ namespace SaveGramps.GameObjects
 
 
             for (int i=wakeUpTotal; i > 0 ; --i){
-                spriteBatch.Draw(tx2WakeUpGrandPa, new Rectangle(580 + i * 55, 0, 50, 50),Color.White);
+                spriteBatch.Draw(tx2WakeUpGrandPa, new Rectangle(580 + i * 45, 0, 40, 40),Color.White);
             }
 
             //spriteBatch.DrawString(font, strToDraw, new Vector2(270,-1), Color.White);

@@ -410,8 +410,7 @@ namespace SaveGramps
                 }
                 else
                 {
-
-                    spriteBatch.DrawString(arialFont, "Wrong Answer!", new Vector2(400, 140), Color.Red);
+                    spriteBatch.DrawString(arialFont, "Oops, try again!", new Vector2(400, 140), Color.White);
                 }
                 spriteBatch.End();
             }
